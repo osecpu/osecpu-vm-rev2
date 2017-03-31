@@ -2,7 +2,7 @@
 #include <setjmp.h>
 #include <time.h>
 
-// OsecpuMain()‚Í‚±‚Ìapi.c‚É‚ ‚è‚Ü‚·I
+// OsecpuMain()ã¯ã“ã®api.cã«ã‚ã‚Šã¾ã™ï¼
 
 typedef struct _ApiWork {
 	char winClosed, autoSleep /* , col3bgr */;
@@ -33,7 +33,7 @@ int OsecpuMain(int argc, const unsigned char **argv)
 	unsigned char *byteBuf0 = malloc(BUFFER_SIZE);
 	Int32 *j32buf = malloc(BUFFER_SIZE * sizeof (Int32));
 	int fileSize, rc, i;
-	int stackSize = 1; /* ƒƒKƒoƒCƒg’PˆÊ */
+	int stackSize = 1; /* ãƒ¡ã‚¬ãƒã‚¤ãƒˆå˜ä½ */
 	FILE *fp;
 	char outputBackend = 0;
 	jitc.defines = &defs;
@@ -70,7 +70,7 @@ int OsecpuMain(int argc, const unsigned char **argv)
 		exit(1);
 	}
 
-	// ƒtƒƒ“ƒgƒGƒ“ƒhƒR[ƒh‚©‚çƒoƒbƒNƒGƒ“ƒhƒR[ƒh‚ğ“¾‚é‚½‚ß‚Ìƒ‹[ƒv.
+	// ãƒ•ãƒ­ãƒ³ãƒˆã‚¨ãƒ³ãƒ‰ã‚³ãƒ¼ãƒ‰ã‹ã‚‰ãƒãƒƒã‚¯ã‚¨ãƒ³ãƒ‰ã‚³ãƒ¼ãƒ‰ã‚’å¾—ã‚‹ãŸã‚ã®ãƒ«ãƒ¼ãƒ—.
 	for (;;) {
 		if (fileSize < 0) break;
 		if (byteBuf0[2] == 0x02) {
@@ -116,7 +116,7 @@ int OsecpuMain(int argc, const unsigned char **argv)
 	//	fprintf(stderr, "jitcAll()=%d, DR0=%d\n", rc, jitc.dr[0]);
 		exit(1);
 	}
-//	*jitc.dst = -1; // I’[‚Ì‚½‚ß‚Ì“Áêopecode.
+//	*jitc.dst = -1; // çµ‚ç«¯ã®ãŸã‚ã®ç‰¹æ®Šopecode.
 	vm.ip  = j32buf;
 	vm.ip1 = jitc.dst;
 
@@ -127,7 +127,7 @@ int OsecpuMain(int argc, const unsigned char **argv)
 //	}
 	rc = execAll(&vm);
 	if (rc != EXEC_SRC_OVERRUN) {
-		fprintf(stderr, "execAll()=%d, DR0=%d\n", rc, vm.dr[0]); // EXEC_SRC_OVERRUN‚È‚ç¬Œ÷.
+		fprintf(stderr, "execAll()=%d, DR0=%d\n", rc, vm.dr[0]); // EXEC_SRC_OVERRUNãªã‚‰æˆåŠŸ.
 		exit(1);
 	}
 	apiEnd(&vm, 0);
@@ -135,7 +135,7 @@ int OsecpuMain(int argc, const unsigned char **argv)
 }
 
 /* driver.c */
-void *mallocRWE(int bytes); // ÀsŒ •t‚«ƒƒ‚ƒŠ‚Ìmalloc.
+void *mallocRWE(int bytes); // å®Ÿè¡Œæ¨©ä»˜ããƒ¡ãƒ¢ãƒªã®malloc.
 void drv_openWin(int x, int y, unsigned char *buf, char *winClosed);
 void drv_flshWin(int sx, int sy, int x0, int y0);
 void drv_sleep(int msec);
@@ -147,8 +147,8 @@ void apiInit(OsecpuVm *vm, int argc, const unsigned char **argv)
 {
 	int i, j;
 	for (i = 0; i <= 0x3f; i++) {
-		vm->r[i] = 0; vm->bit[i] = 32; // Rxx: ‚·‚×‚Ä32ƒrƒbƒg‚Ì0.
-		vm->p[i].typ = PTR_TYP_INVALID; // Pxx: ‚·‚×‚Ä•s³.
+		vm->r[i] = 0; vm->bit[i] = 32; // Rxx: ã™ã¹ã¦32ãƒ“ãƒƒãƒˆã®0.
+		vm->p[i].typ = PTR_TYP_INVALID; // Pxx: ã™ã¹ã¦ä¸æ­£.
 	}
 	j = 1;
 	for (i = 0; i < DEFINES_MAXLABELS; i++) {
@@ -201,9 +201,9 @@ void api07c0_fileRead(OsecpuVm *vm);
 void api07c1_fileWrite(OsecpuVm *vm);
 
 const Int32 *apiEntry(OsecpuVm *vm)
-// VM‚ÌÄŠJ’n“_‚ğ•Ô‚·.
+// VMã®å†é–‹åœ°ç‚¹ã‚’è¿”ã™.
 {
-	int func = execStep_getRxx(vm, 0x30, 16); // ‰ºˆÊ16bit‚µ‚©‚İ‚È‚¢.
+	int func = execStep_getRxx(vm, 0x30, 16); // ä¸‹ä½16bitã—ã‹ã¿ãªã„.
 	int i;
 	if (vm->errorCode != 0) goto fin;
 	if (setjmp(apiWork.setjmpErr) != 0) goto fin;
@@ -234,7 +234,7 @@ const Int32 *apiEntry(OsecpuVm *vm)
 	jitcSetRetCode(&vm->errorCode, EXEC_API_ERROR);
 fin: ;
 	const Int32 *retcode = NULL;
-	execStep_checkMemAccess(vm, 0x30, PTR_TYP_CODE, EXEC_CMA_FLAG_EXEC); // å‚ÉliveSign‚Ìƒ`ƒFƒbƒN.
+	execStep_checkMemAccess(vm, 0x30, PTR_TYP_CODE, EXEC_CMA_FLAG_EXEC); // ä¸»ã«liveSignã®ãƒã‚§ãƒƒã‚¯.
 	if (vm->errorCode == 0)
 		retcode = (const Int32 *) vm->p[0x30].p;
 	return retcode;
@@ -242,7 +242,7 @@ fin: ;
 
 void apiEnd(OsecpuVm *vm, Int32 retcode)
 {
-	// I—¹ˆ—.
+	// çµ‚äº†å‡¦ç†.
 	if (apiWork.autoSleep != 0) {
 		if (vram != 0)
 			drv_flshWin(v_xsiz, v_ysiz, 0, 0);
@@ -454,8 +454,8 @@ void apiFillRect(int modeC, int x0, int y0, int x1, int y1, int c)
 }
 
 int apiSprintf(int buflen, unsigned char *buf, unsigned char *p, unsigned char *p1, int charLen, Int32 *q, Int32 *q1, OsecpuVm *vm)
-// %s‚â%f‚Ö‚Ì‘Î‰‚Í«—ˆ‚Ì‰Û‘è.
-// b32‚Ì‚Ì‚İcharLen!=1‚ğ‹–‚·(T_SINT32‚É‚È‚é‚½‚ß)...‚¾‚©‚çí‚É”CˆÓ‚ÌŒ^‚ğó‚¯•t‚¯‚Ä‚¢‚é‚í‚¯‚Å‚Í‚È‚¢.
+// %sã‚„%fã¸ã®å¯¾å¿œã¯å°†æ¥ã®èª²é¡Œ.
+// b32ã®æ™‚ã®ã¿charLen!=1ã‚’è¨±ã™(T_SINT32ã«ãªã‚‹ãŸã‚)...ã ã‹ã‚‰å¸¸ã«ä»»æ„ã®å‹ã‚’å—ã‘ä»˜ã‘ã¦ã„ã‚‹ã‚ã‘ã§ã¯ãªã„.
 {
 	int i = 0, base, v, j, dis = 1, len;
 	unsigned char c, sign;
@@ -475,21 +475,21 @@ err:
 			continue;
 		}
 		if (c == 0x01) {
-			// q[2] = 1:Œ…‰Â•Ï, 2:ƒXƒy[ƒX‰»‚µ‚È‚¢, 4:•„†‚È‚µ, 8:ƒvƒ‰ƒX‚Ì•t—^.
+			// q[2] = 1:æ¡å¯å¤‰, 2:ã‚¹ãƒšãƒ¼ã‚¹åŒ–ã—ãªã„, 4:ç¬¦å·ãªã—, 8:ãƒ—ãƒ©ã‚¹ã®ä»˜ä¸.
 			if (q + 4 > q1) goto err;
 			base = q[0];
 			sign = 0;
 			if (base ==  0) base = 16;
 			if (base == -1) base = 10;
 			if (base < 0 || base > 16) goto err;
-			if (i + q[1] > buflen) goto err;	// q[1]:Œ…‚ÌÅ‘åƒTƒCƒY.
+			if (i + q[1] > buflen) goto err;	// q[1]:æ¡ã®æœ€å¤§ã‚µã‚¤ã‚º.
 			v = q[3]; // q[3]: value.
 			if ((q[2] & 4) == 0) {
-				// v‚Í•„†•t‚«®”.
+				// vã¯ç¬¦å·ä»˜ãæ•´æ•°.
 				if ((q[2] & 8) != 0 && v > 0) sign = '+';
 				if (v < 0) { sign = '-'; v *= -1; }
 			} else {
-				// v‚Í•„†–³‚µ®”.
+				// vã¯ç¬¦å·ç„¡ã—æ•´æ•°.
 				if ((q[2] & 8) != 0 && v != 0) sign = '+';
 			}
 			for (j = q[1] - 1; j >= 0; j--) {
@@ -630,13 +630,13 @@ void api0002_drawPoint(OsecpuVm *vm)
 }
 
 void api0003_drawLine(OsecpuVm *vm)
-/// 2014.08.13 ???‚³‚ñ‚Ì’ñˆÄ‚É‚æ‚èƒuƒŒƒ[ƒ“ƒnƒ€‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚É•ÏX.
+/// 2014.08.13 ???ã•ã‚“ã®ææ¡ˆã«ã‚ˆã‚Šãƒ–ãƒ¬ã‚¼ãƒ³ãƒãƒ ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«å¤‰æ›´.
 {
 	int c = apiLoadColor(vm, 0x32), modeC = execStep_getRxx(vm, 0x31, 4) & 0x0c;
 	int x0 = execStep_getRxx(vm, 0x33, 16), y0 = execStep_getRxx(vm, 0x34, 16);
 	int x1 = execStep_getRxx(vm, 0x35, 16), y1 = execStep_getRxx(vm, 0x36, 16);
 	int x, y, dx, dy, sx, sy, err, e2;
-	if (1) { // ƒNƒŠƒbƒsƒ“ƒOOFF‚Ìê‡.
+	if (1) { // ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°OFFã®å ´åˆ.
 		if (x0 == -1) x0 = v_xsiz - 1;
 		if (y0 == -1) y0 = v_ysiz - 1;
 		if (x1 == -1) x1 = v_xsiz - 1;
@@ -698,7 +698,7 @@ void api0004_rect(OsecpuVm *vm)
 void api0005_oval(OsecpuVm *vm)
 // Oval(mode:R31, c:R32, xsiz:R33, ysiz:R34, x0:R35, y0:R36)
 {
-	// ‚±‚ê‚ÌŒvZ¸“x‚ÍƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆË‘¶‚·‚é.
+	// ã“ã‚Œã®è¨ˆç®—ç²¾åº¦ã¯ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«ä¾å­˜ã™ã‚‹.
 	int c = apiLoadColor(vm, 0x32), mode = execStep_getRxx(vm, 0x31, 6);
 	int xsiz = execStep_getRxx(vm, 0x33, 16), ysiz = execStep_getRxx(vm, 0x34, 16), x0, y0, x1, y1;
 	double dcx, dcy, dcxy, dtx, dty, dcx1, dcy1, dcxy1, dtx1, dty1;
@@ -805,7 +805,7 @@ err:
 	if (len <= 0) goto fin;
 
 	if (modeC == 0x0 && sx == 1 && sy == 1) {
-		// ƒƒWƒƒ[ƒP[ƒX‚ğ‚‘¬‰».
+		// ãƒ¡ã‚¸ãƒ£ãƒ¼ã‚±ãƒ¼ã‚¹ã‚’é«˜é€ŸåŒ–.
 		for (i = 0; i < len; i++) {
 			ch = buf[i];
 			for (dy = 0; dy < 16; dy++) {
@@ -855,8 +855,8 @@ void api0008_exit(OsecpuVm *vm)
 void api0009_sleep(OsecpuVm *vm)
 {
 	int mod = execStep_getRxx(vm, 0x31, 16), msec = execStep_getRxx(vm, 0x32, 32);
-	// 1:“ü—Í‘Ò‚¿.
-	// 2:flsh‚Ì—}§.
+	// 1:å…¥åŠ›å¾…ã¡.
+	// 2:flshã®æŠ‘åˆ¶.
 	if (msec == -1) {
 	//	apiWork.autoSleep = 1;
 		apiEnd(vm, 0);
@@ -865,13 +865,13 @@ void api0009_sleep(OsecpuVm *vm)
 		jitcSetRetCode(&vm->errorCode, EXEC_API_ERROR);
 		longjmp(apiWork.setjmpErr, 1);
 	}
-//	apiWork.autoSleep = 0; // rev2‚Å‚Í‚±‚ê‚ğ‚â‚ç‚È‚¢.
-		// ‚·‚®‚ÉI—¹‚µ‚½‚¯‚ê‚Î api0008_exit() ‚ğg‚¤.
+//	apiWork.autoSleep = 0; // rev2ã§ã¯ã“ã‚Œã‚’ã‚„ã‚‰ãªã„.
+		// ã™ãã«çµ‚äº†ã—ãŸã‘ã‚Œã° api0008_exit() ã‚’ä½¿ã†.
 	if ((mod & 2) == 0 && vram != NULL)
 		drv_flshWin(v_xsiz, v_ysiz, 0, 0);
 	for (;;) {
 		if (apiWork.winClosed != 0)
-			apiEnd(vm, 1); // ƒ†[ƒU‚É‚æ‚é’†’f.
+			apiEnd(vm, 1); // ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã‚‹ä¸­æ–­.
 		drv_sleep(msec);
 		if ((mod & 1) == 0 || keybuf_c > 0) break;
 	}
@@ -883,8 +883,8 @@ void api000d_inkey(OsecpuVm *vm)
 	int mod = execStep_getRxx(vm, 0x31, 16);
 	//  1:get(0)/peek(1)
 	//  2:window(0)/stdin(1)
-	//	4: shift, lockŒn‚ğ—LŒø‰».
-	//	8: ¶‰E‚ÌshiftŒn‚ğ‹æ•Ê‚·‚é.
+	//	4: shift, lockç³»ã‚’æœ‰åŠ¹åŒ–.
+	//	8: å·¦å³ã®shiftç³»ã‚’åŒºåˆ¥ã™ã‚‹.
 	vm->bit[0x30] = 32;
 	vm->r[0x30] = -1;
 	if (2 <= mod && mod <= 3) {

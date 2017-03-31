@@ -1,6 +1,6 @@
 #include "osecpu-vm.h"
 
-// C0-DF�ɖ��߂��g�����邽�߂̂���.
+// C0-DFに命令を拡張するためのもの.
 
 void jitcInitExtend(OsecpuJitc *jitc)
 {

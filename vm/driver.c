@@ -1,5 +1,5 @@
-/* OSˆË‘¶ŠÖ” */
-void *mallocRWE(int bytes); // ÀsŒ •t‚«ƒƒ‚ƒŠ‚Ìmalloc.
+/* OSä¾å­˜é–¢æ•° */
+void *mallocRWE(int bytes); // å®Ÿè¡Œæ¨©ä»˜ããƒ¡ãƒ¢ãƒªã®malloc.
 void drv_openWin(int x, int y, unsigned char *buf, char *winClosed);
 void drv_flshWin(int sx, int sy, int x0, int y0);
 void drv_sleep(int msec);
@@ -57,7 +57,7 @@ void putKeybuf(int i)
 	return;
 }
 
-/* OSˆË‘¶•” */
+/* OSä¾å­˜éƒ¨ */
 
 #if (DRV_OSNUM == 0x0001)
 
@@ -71,7 +71,7 @@ struct BLD_WORK {
 	HINSTANCE hi;
 	HWND hw;
 	BITMAPINFO bmi;
-	int tmcount1, tmcount2, flags, smp; /* bit0: I—¹ */
+	int tmcount1, tmcount2, flags, smp; /* bit0: çµ‚äº† */
 	HANDLE mtx;
 	char *winClosed;
 };
@@ -105,7 +105,7 @@ struct BL_WORK bl_work;
 #define BL_CLEARREP		0x00000008
 #define BL_DELFFF		0x00000010
 
-#define	BL_KEYMODE		0x00000000	// ì‚è‚©‚¯, make/remake/break‚ªŒ©‚¦‚é‚©‚Ç‚¤‚©
+#define	BL_KEYMODE		0x00000000	// ä½œã‚Šã‹ã‘, make/remake/breakãŒè¦‹ãˆã‚‹ã‹ã©ã†ã‹
 
 #define w	bl_work
 #define dw	bld_work
@@ -207,14 +207,14 @@ static int winthread(void *dmy)
 
 	for (;;) {
 		i = GetMessage(&msg, NULL, 0, 0);
-		if (i == 0 || i == -1)	/* ƒGƒ‰[‚à‚µ‚­‚ÍI—¹ƒƒbƒZ[ƒW */
+		if (i == 0 || i == -1)	/* ã‚¨ãƒ©ãƒ¼ã‚‚ã—ãã¯çµ‚äº†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ */
 			break;
-		/* ‚»‚Ì‚Ù‚©‚Í‚Æ‚è‚ ‚¦‚¸ƒfƒtƒHƒ‹ƒgˆ—‚Å */
+		/* ãã®ã»ã‹ã¯ã¨ã‚Šã‚ãˆãšãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå‡¦ç†ã§ */
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 //	PostQuitMessage(0);
-	dw.flags |= 1; /* I—¹, bld_waitNF()‚ªŒ©‚Â‚¯‚é */
+	dw.flags |= 1; /* çµ‚äº†, bld_waitNF()ãŒè¦‹ã¤ã‘ã‚‹ */
 	if (dw.winClosed != NULL)
 		*dw.winClosed = 1;
 	return 0;
@@ -364,7 +364,7 @@ void drv_sleep(int msec)
 {
 	Sleep(msec);
 //	MsgWaitForMultipleObjects(1, &threadhandle, FALSE, msec, QS_ALLINPUT);
-	/* •×‹­•s‘«‚Å‚Ü‚¾‘‚«•û‚ª•ª‚©‚è‚Ü‚¹‚ñ! */
+	/* å‹‰å¼·ä¸è¶³ã§ã¾ã æ›¸ãæ–¹ãŒåˆ†ã‹ã‚Šã¾ã›ã‚“! */
 	return;
 }
 
@@ -431,16 +431,16 @@ NSApplication* app;
 
 // inkey support by ???, 2014.07.15. thanks!
 
-// ƒL[“ü—ÍD
-// ‚±‚Ìƒƒ\ƒbƒh‚ªŒÄ‚Î‚ê‚é‚½‚ß‚É‚ÍC
-// ‚±‚Ìƒrƒ…[‚ªWindow‚ÌFirst Responder‚Å–³‚¯‚ê‚Î‚È‚ç‚È‚¢.
+// ã‚­ãƒ¼å…¥åŠ›ï¼
+// ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ãŒå‘¼ã°ã‚Œã‚‹ãŸã‚ã«ã¯ï¼Œ
+// ã“ã®ãƒ“ãƒ¥ãƒ¼ãŒWindowã®First Responderã§ç„¡ã‘ã‚Œã°ãªã‚‰ãªã„.
 - (void)keyDown:(NSEvent *)theEvent {
   if ([[theEvent characters] length] <= 0) {
     return;
   }
    
-  // ‚±‚±‚Åc‚ÍƒL[ƒR[ƒh‚È‚Ç‚Å‚Í–³‚­C¶¬‚³‚ê‚½•¶šD
-  // ‚»‚Ì‚½‚ßCOS‚ÌƒL[ƒ}ƒbƒv‚ÉˆË‘¶‚·‚é‰Â”\«‚ª‚ ‚éD
+  // ã“ã“ã§cã¯ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ãªã©ã§ã¯ç„¡ãï¼Œç”Ÿæˆã•ã‚ŒãŸæ–‡å­—ï¼
+  // ãã®ãŸã‚ï¼ŒOSã®ã‚­ãƒ¼ãƒãƒƒãƒ—ã«ä¾å­˜ã™ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ï¼
  
   unichar c = [[theEvent characters] characterAtIndex:0];
   NSUInteger flags = [NSEvent modifierFlags];
@@ -467,14 +467,14 @@ NSApplication* app;
    
   if (c == NSDeleteFunctionKey) { result = KEY_DEL; }
 
-  // CocoaƒtƒŒ[ƒ€ƒ[ƒN‚Å‚ÍCCüƒL[‚Ì‰E¶‚ğ‹æ•Ê‚·‚é‚â‚Â‚ªŒ©“–‚½‚ç‚È‚©‚Á‚½‚Å‚·.
+  // Cocoaãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã§ã¯ï¼Œä¿®é£¾ã‚­ãƒ¼ã®å³å·¦ã‚’åŒºåˆ¥ã™ã‚‹ã‚„ã¤ãŒè¦‹å½“ãŸã‚‰ãªã‹ã£ãŸã§ã™.
   if (flags & NSShiftKeyMask) { modif |= 1 << 16; }
   if (flags & NSControlKeyMask) { modif |= 1 << 17; }
 
   if (('A' <= result && result <= 'Z') || ('a' <= result && result <= 'z')) {
     if (modif != 0) {
       result |= modif;
-      result &= ~0x20; // ‘å•¶š‚É‚µ‚Ä‚¢‚é.
+      result &= ~0x20; // å¤§æ–‡å­—ã«ã—ã¦ã„ã‚‹.
     }
   }
 
@@ -544,7 +544,7 @@ winClosed : (char *)_winClosed;
 	[window.contentView addSubview:_view];
 
   // inkey support by ???, 2014.07.15. thanks!
-  // First Responder‚ª“ü—Í‚ÌÓ”C‚ğ‚Â.
+  // First ResponderãŒå…¥åŠ›ã®è²¬ä»»ã‚’æŒã¤.
   [window makeFirstResponder:_view];
 }
 
@@ -564,7 +564,7 @@ int main(int argc, const char **argv)
 	// Main thread
 	NSAutoreleasePool* pool;
 	ProcessSerialNumber psn = {0, kCurrentProcess};
-	// ForegroundApplication‚É‚È‚ê‚é‚æ‚¤‚Éİ’è(‚±‚¤‚µ‚È‚¢‚ÆƒL[ƒCƒxƒ“ƒg‚ªæ“¾‚Å‚«‚È‚¢)
+	// ForegroundApplicationã«ãªã‚Œã‚‹ã‚ˆã†ã«è¨­å®š(ã“ã†ã—ãªã„ã¨ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãŒå–å¾—ã§ããªã„)
 	TransformProcessType(&psn, kProcessTransformToForegroundApplication);
 
 	objc_main = [[Main alloc] init];

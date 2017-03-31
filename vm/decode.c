@@ -2,12 +2,12 @@
 #include <stdarg.h>
 #include <setjmp.h>
 
-// «—ˆ“I‚É‚ÍA‚±‚ÌƒR[ƒh‚Ítek.c‚àŠÜ‚ß‚ÄOSECPU-VM‚ÌƒoƒCƒgƒR[ƒh‚ÉˆÚA‚³‚ê‚éB
-// Œ»İ‚ÍsöŒë‚µ‚½‚¢‚Ì‚ÅAOSECPU-VM‰»‚µ‚Ä‚¢‚È‚¢‚¾‚¯B
+// å°†æ¥çš„ã«ã¯ã€ã“ã®ã‚³ãƒ¼ãƒ‰ã¯tek.cã‚‚å«ã‚ã¦OSECPU-VMã®ãƒã‚¤ãƒˆã‚³ãƒ¼ãƒ‰ã«ç§»æ¤ã•ã‚Œã‚‹ã€‚
+// ç¾åœ¨ã¯è©¦è¡ŒéŒ¯èª¤ã—ãŸã„ã®ã§ã€OSECPU-VMåŒ–ã—ã¦ã„ãªã„ã ã‘ã€‚
 
 typedef unsigned char UCHAR;
 
-// upxŠÖŒW.
+// upxé–¢ä¿‚.
 
 typedef struct _DecodeUpxStr {
 	const UCHAR *p, *p1;
@@ -90,7 +90,7 @@ fin:
 	return q - q0;
 }
 
-// tek5ŠÖŒW.
+// tek5é–¢ä¿‚.
 
 int decode_tek5(const UCHAR *p, const UCHAR *p1, UCHAR *q, UCHAR *q1)
 {
@@ -115,9 +115,9 @@ err:
 	return -1;
 }
 
-// ƒtƒƒ“ƒgƒGƒ“ƒhƒR[ƒhŠÖŒW.
+// ãƒ•ãƒ­ãƒ³ãƒˆã‚¨ãƒ³ãƒ‰ã‚³ãƒ¼ãƒ‰é–¢ä¿‚.
 
-#define MODE_REG_LC3	1	// osecpu120d‚©‚çŒ±“I‚É“±“ü.
+#define MODE_REG_LC3	1	// osecpu120dã‹ã‚‰è©¦é¨“çš„ã«å°å…¥.
 
 typedef struct _DecodeForLoop {
 	int r, bit, v1t, v1v, step, label;
@@ -215,10 +215,10 @@ int fcode_fixTyp(DecodeFcodeStr *s, unsigned char *q0, unsigned char *q1);
 void fcode_unknownBitR(DecodeFcodeStr *s, int r0, int r1);
 
 static int len3table0[7] = { -1, 0, 1, 2, 3, 4, -0x10 /* rep0 */ };
-static int len3table0f[7] = { -0xfff, -4, -3, -2, -1, 0, 1 }; // -0xfff‚ÍƒŠƒU[ƒu.
+static int len3table0f[7] = { -0xfff, -4, -3, -2, -1, 0, 1 }; // -0xfffã¯ãƒªã‚¶ãƒ¼ãƒ–.
 static int len3table14[7] = { -1, -0x10+1 /* rep1 */, 1,  2,  3,  4, -0x10+0 /* rep0 */ }; // ADD
 
-#define BIT_UNKNOWN		0x7fffffff	// ‚Æ‚É‚©‚­‘å‚«‚È’l‚É‚·‚é.
+#define BIT_UNKNOWN		0x7fffffff	// ã¨ã«ã‹ãå¤§ããªå€¤ã«ã™ã‚‹.
 #define MIN(a, b)		((a) < (b) ? (a) : (b))
 
 void decode_error(DecodeFcodeStr *s, const char *format, ...)
@@ -259,7 +259,7 @@ int decode_fcode(const unsigned char *p, const unsigned char *p1, unsigned char 
 		s.bitF[i] = BIT_UNKNOWN;
 	}
 	for (i = 1; i <= 4; i++)
-		s.pxxTyp[i] = PTR_TYP_INVALID;	// ’l‚Í‚Ü‚¾•s–¾‚¾‚ª„’è‚Í‰Â”\.
+		s.pxxTyp[i] = PTR_TYP_INVALID;	// å€¤ã¯ã¾ã ä¸æ˜ã ãŒæ¨å®šã¯å¯èƒ½.
 	for (j = 0; j < 3; j++) {
 		for (i = 0; i < 0x40; i++)
 			s.rep[j][i] = i;
@@ -269,7 +269,7 @@ int decode_fcode(const unsigned char *p, const unsigned char *p1, unsigned char 
 	for (j = 0; j < 0x20; j++)
 		s.rep[3][j] = 2 << j;
 	s.wait_1c0 = -1;
-	*s.q++ = 0x00; // ƒoƒbƒNƒGƒ“ƒh‚Ìƒwƒbƒ_.
+	*s.q++ = 0x00; // ãƒãƒƒã‚¯ã‚¨ãƒ³ãƒ‰ã®ãƒ˜ãƒƒãƒ€.
 
 	if (setjmp(s.errJmp) != 0) {
 		s.err = 1;
@@ -307,11 +307,11 @@ fin:
 }
 
 int fcode_swapOpecode(DecodeFcodeStr *s, int i)
-// 0‚ğ14‚É‘ã—p‰Â”\‚É‚·‚é.
-// osecpu-110‚æ‚èŒ±“I‚É“±“ü.
-// OSWP–½—ß‚É‚æ‚èƒLƒƒƒ“ƒZƒ‹‚³‚ê‚éi–¢À‘•j.
-// ‚à‚µ‚­‚Í14‚ªˆê“x‚Å‚àoŒ»‚·‚é‚ÆƒLƒƒƒ“ƒZƒ‹‚³‚ê‚é.
-// ƒR[ƒh––”ö‚Ì0.5ƒoƒCƒg‚ğ–„‚ß‚é‚½‚ß‚É‚Í0‚ª‚»‚Ì‚Ü‚Üg‚¦‚é.
+// 0ã‚’14ã«ä»£ç”¨å¯èƒ½ã«ã™ã‚‹.
+// osecpu-110ã‚ˆã‚Šè©¦é¨“çš„ã«å°å…¥.
+// OSWPå‘½ä»¤ã«ã‚ˆã‚Šã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã‚‹ï¼ˆæœªå®Ÿè£…ï¼‰.
+// ã‚‚ã—ãã¯14ãŒä¸€åº¦ã§ã‚‚å‡ºç¾ã™ã‚‹ã¨ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã‚‹.
+// ã‚³ãƒ¼ãƒ‰æœ«å°¾ã®0.5ãƒã‚¤ãƒˆã‚’åŸ‹ã‚ã‚‹ãŸã‚ã«ã¯0ãŒãã®ã¾ã¾ä½¿ãˆã‚‹.
 {
 	if (s->flag14 != 0) {
 		if (i == 0x14) {
@@ -329,7 +329,7 @@ void decode_fcodeStep(DecodeFcodeStr *s)
 	if (s->err == 0) {
 		opecode = hh4ReaderGetUnsigned(&s->hh4r);
 		if (opecode == 0 && hh4ReaderEnd(&s->hh4r) != 0)
-			goto fin; // ––”ö‚Ì0.5ƒoƒCƒg‚ğ–„‚ß‚Ä‚¢‚½0‚ğ”­Œ©. ‚±‚ê‚Í–³‹‚·‚é.
+			goto fin; // æœ«å°¾ã®0.5ãƒã‚¤ãƒˆã‚’åŸ‹ã‚ã¦ã„ãŸ0ã‚’ç™ºè¦‹. ã“ã‚Œã¯ç„¡è¦–ã™ã‚‹.
 		opecode = fcode_swapOpecode(s, opecode);
 		if (opecode == 0x0) {
 			if (s->flag4 == 0) {
@@ -487,9 +487,9 @@ void decode_fcodeStep(DecodeFcodeStr *s)
 			goto fin;
 		}
 		if (opecode == 0x32) {	// malloc
-			// è”²‚«‚Åbit‚ğ”½‰f‚³‚¹‚Ä‚¢‚È‚¢.
+			// æ‰‹æŠœãã§bitã‚’åæ˜ ã•ã›ã¦ã„ãªã„.
 			i = fcode_putLimmOrCp(s, 32, 0x3b);	// typ
-			l = s->getIntTyp; // 0‚È‚çconst.
+			l = s->getIntTyp; // 0ãªã‚‰const.
 			j = fcode_putLimmOrCp(s, 32, 0x3a);	// len
 			k = fcode_getReg(s, 1, MODE_REG_LC3);
 			fcode_putOpecode1(s, 0xb2);
@@ -586,7 +586,7 @@ void decode_fcodeStep(DecodeFcodeStr *s)
 			s->lastLabel++;
 			fcode_putLb(s, 1, s->lastLabel);
 #if 0
-			// waitLb0‚ªŠÇ—‚µ‚Ä‚¢‚é‚Ì‚ÍŠÖ”“à‚Å‚Ì•ªŠò‚ÉŒÀ’è‚³‚ê‚é‚Ì‚ÅA‚±‚ê‚ğ‚â‚é•K—v‚ª‚È‚¢.
+			// waitLb0ãŒç®¡ç†ã—ã¦ã„ã‚‹ã®ã¯é–¢æ•°å†…ã§ã®åˆ†å²ã«é™å®šã•ã‚Œã‚‹ã®ã§ã€ã“ã‚Œã‚’ã‚„ã‚‹å¿…è¦ãŒãªã„.
 			if (s.waitLb0 > 0)
 				s.waitLb0--;
 #endif
@@ -612,14 +612,14 @@ void decode_fcodeStep(DecodeFcodeStr *s)
 			goto fin;
 		}
 		if (opecode == 0x3e) {
-			// d‚©4‚Åabsƒ‚[ƒh.
+			// dã‹4ã§absãƒ¢ãƒ¼ãƒ‰.
 			i = fcode_getSigned(s);
-			// ‚±‚±‚Å‚ÍwaitLb0‚ğXV‚µ‚È‚¢.
-			// ‚±‚±‚ÅXV‚·‚é‚Æ‚¨‚©‚µ‚­‚È‚é.
+			// ã“ã“ã§ã¯waitLb0ã‚’æ›´æ–°ã—ãªã„.
+			// ã“ã“ã§æ›´æ–°ã™ã‚‹ã¨ãŠã‹ã—ããªã‚‹.
 			s->lastLabel++;
 			fcode_putPlimm(s, 0x30, s->lastLabel);
-			i |= 0x80000000; // Œã‚Å•â³‚·‚é‚½‚ß‚Éƒ}[ƒN‚·‚é.
-			i &= 0x80ffffff; // ‘Š‘Î•â³.
+			i |= 0x80000000; // å¾Œã§è£œæ­£ã™ã‚‹ãŸã‚ã«ãƒãƒ¼ã‚¯ã™ã‚‹.
+			i &= 0x80ffffff; // ç›¸å¯¾è£œæ­£.
 			fcode_putPlimm(s, 0x3f, i);
 			fcode_putLb(s, 3, s->lastLabel);
 			fcode_putRemark0(s);
@@ -853,11 +853,11 @@ int fcode_getRep(DecodeFcodeStr *s, const int *repRawList, const int *len3table,
 		k += 0x11;
 		for (i = 0; i < 0x40; i++) {
 			if (i < k) {
-				// 4ƒrƒbƒg‚Å‘‚¯‚é‚à‚Ì.
+				// 4ãƒ“ãƒƒãƒˆã§æ›¸ã‘ã‚‹ã‚‚ã®.
 				rep[j] = repRawList[i];
 				j++;
 			} else {
-				// 8ƒrƒbƒgˆÈã.
+				// 8ãƒ“ãƒƒãƒˆä»¥ä¸Š.
 				if (0x0f <= repRawList[i] && repRawList[i] <= 0x3e) {
 					rep[j] = repRawList[i];
 					j++;
@@ -869,13 +869,13 @@ int fcode_getRep(DecodeFcodeStr *s, const int *repRawList, const int *len3table,
 		// for fcode_getReg.
 		for (i = 0; i < 0x40; i++) {
 			if (i < APPACK_SUB1R_PRM) {
-				// 4ƒrƒbƒg‚Å‘‚¯‚é‚à‚Ì.
+				// 4ãƒ“ãƒƒãƒˆã§æ›¸ã‘ã‚‹ã‚‚ã®.
 				if (repRawList[i] >= 7 - APPACK_SUB1R_PRM) {
 					rep[j] = repRawList[i];
 					j++;
 				}
 			} else {
-				// 8ƒrƒbƒgˆÈã.
+				// 8ãƒ“ãƒƒãƒˆä»¥ä¸Š.
 				if (0x20 <= repRawList[i] && repRawList[i] <= 0x27) {
 					rep[j] = repRawList[i];
 					j++;
@@ -893,9 +893,9 @@ int fcode_getRep(DecodeFcodeStr *s, const int *repRawList, const int *len3table,
 }
 
 int fcode_getReg(DecodeFcodeStr *s, int typ, char mode)
-// 4ƒrƒbƒgŒ`®‚Ìê‡(0`6): R00`R04, rep0`rep1.
-// ‚»‚Ì‚Ù‚©‚Ìê‡(0`0x47): R00`R17, rep0`rep7, R20`R3F, R18`R1F, bit...
-// bitw’è‚É‘Î‰‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢i–¢À‘•j.
+// 4ãƒ“ãƒƒãƒˆå½¢å¼ã®å ´åˆ(0ã€œ6): R00ã€œR04, rep0ã€œrep1.
+// ãã®ã»ã‹ã®å ´åˆ(0ã€œ0x47): R00ã€œR17, rep0ã€œrep7, R20ã€œR3F, R18ã€œR1F, bit...
+// bitæŒ‡å®šã«å¯¾å¿œã—ãªã‘ã‚Œã°ã„ã‘ãªã„ï¼ˆæœªå®Ÿè£…ï¼‰.
 {
 	int i = hh4ReaderGetUnsigned(&s->hh4r);
 	if (mode == 0) {
@@ -1612,7 +1612,7 @@ void fcode_ope2(DecodeFcodeStr *s)
 
 void fcode_ope3(DecodeFcodeStr *s)
 {
-	Int32 i = fcode_getSigned(s); // æ‚Ös‚­•û‚ª—D‹ö‚³‚ê‚é. –ß‚éŒn‚Ífor‚Åx‰‡‚µ‚Ä‚¢‚é‚Ì‚Å.
+	Int32 i = fcode_getSigned(s); // å…ˆã¸è¡Œãæ–¹ãŒå„ªé‡ã•ã‚Œã‚‹. æˆ»ã‚‹ç³»ã¯forã§æ”¯æ´ã—ã¦ã„ã‚‹ã®ã§.
 	int p = 0x3f;
 	if (s->flag4 != 0)
 		p = fcode_getReg(s, 1, MODE_REG_LC3);
@@ -1622,8 +1622,8 @@ void fcode_ope3(DecodeFcodeStr *s)
 	if (s->waitLb0 < i)
 		s->waitLb0 = i;
 //printf("waitLb0=%d\n", s->waitLb0);
-	i |= 0x80000000; // Œã‚Å•â³‚·‚é‚½‚ß‚Éƒ}[ƒN‚·‚é.
-	i &= 0x80ffffff; // ‘Š‘Î•â³.
+	i |= 0x80000000; // å¾Œã§è£œæ­£ã™ã‚‹ãŸã‚ã«ãƒãƒ¼ã‚¯ã™ã‚‹.
+	i &= 0x80ffffff; // ç›¸å¯¾è£œæ­£.
 	fcode_putPlimm(s, p, i);
 	s->flag4 = s->flagD = 0;
 	if (p != 0x3f)
@@ -1632,13 +1632,13 @@ void fcode_ope3(DecodeFcodeStr *s)
 }
 
 void fcode_ope06(DecodeFcodeStr *s)
-// ƒvƒŠƒtƒBƒNƒX4: ƒJƒEƒ“ƒ^‰Šú’l‚Í0ˆÈŠO.
-// ƒvƒŠƒtƒBƒNƒXD: step‚Ì•ÏXi–¢À‘•j.
-// bit‚ÍƒJƒEƒ“ƒ^”äŠr’l‚Ì‚Ù‚¤‚Åw’è‚Å‚«‚é.
+// ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹4: ã‚«ã‚¦ãƒ³ã‚¿åˆæœŸå€¤ã¯0ä»¥å¤–.
+// ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹D: stepã®å¤‰æ›´ï¼ˆæœªå®Ÿè£…ï¼‰.
+// bitã¯ã‚«ã‚¦ãƒ³ã‚¿æ¯”è¼ƒå€¤ã®ã»ã†ã§æŒ‡å®šã§ãã‚‹.
 {
 	int v0v = 0, v0t = 0, v0b = BIT_UNKNOWN, rem2, i;
 	DecodeForLoop *dfl = &s->floop[s->floopDepth];
-	if (s->flagD != 0) { s->err = 1; return; } // –¢À‘•.
+	if (s->flagD != 0) { s->err = 1; return; } // æœªå®Ÿè£….
 	if (s->flag4 != 0) {
 		s->getIntBit = BIT_UNKNOWN;
 		v0v = fcode_getInteger(s, len3table0); // v0.
@@ -1890,8 +1890,8 @@ fin:
 #define R1	-0x10+1 /* rep1 */
 
 void fcode_opeAlu(DecodeFcodeStr *s, int opecode)
-// ƒvƒŠƒtƒBƒNƒX4: r0‚Ír1‚Æ‚ÍˆÙ‚È‚éiO€‰‰Zƒ‚[ƒhj.
-// ƒvƒŠƒtƒBƒNƒXD: ‰‰Z•ûŒü‚Ì•ÏX.
+// ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹4: r0ã¯r1ã¨ã¯ç•°ãªã‚‹ï¼ˆä¸‰é …æ¼”ç®—ãƒ¢ãƒ¼ãƒ‰ï¼‰.
+// ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹D: æ¼”ç®—æ–¹å‘ã®å¤‰æ›´.
 {
 	static int len3table[12][7] = {
 	//	{ -1,  0,  1,  2,  3,  4, R0 }, // general
@@ -2007,8 +2007,8 @@ void fcode_opeCmp(DecodeFcodeStr *s, int opecode)
 			i = fcode_getSigned(s);
 		if (s->waitLb0 < i)
 			s->waitLb0 = i;
-		i |= 0x80000000; // Œã‚Å•â³‚·‚é‚½‚ß‚Éƒ}[ƒN‚·‚é.
-		i &= 0x80ffffff; // ‘Š‘Î•â³.
+		i |= 0x80000000; // å¾Œã§è£œæ­£ã™ã‚‹ãŸã‚ã«ãƒãƒ¼ã‚¯ã™ã‚‹.
+		i &= 0x80ffffff; // ç›¸å¯¾è£œæ­£.
 		fcode_putCnd(s, 0x3f);
 		fcode_putPlimm(s, 0x3f, i);
 	}
@@ -2082,8 +2082,8 @@ void fcode_opeFcmp(DecodeFcodeStr *s, int opecode)
 			i = fcode_getSigned(s);
 		if (s->waitLb0 < i)
 			s->waitLb0 = i;
-		i |= 0x80000000; // Œã‚Å•â³‚·‚é‚½‚ß‚Éƒ}[ƒN‚·‚é.
-		i &= 0x80ffffff; // ‘Š‘Î•â³.
+		i |= 0x80000000; // å¾Œã§è£œæ­£ã™ã‚‹ãŸã‚ã«ãƒãƒ¼ã‚¯ã™ã‚‹.
+		i &= 0x80ffffff; // ç›¸å¯¾è£œæ­£.
 		fcode_putCnd(s, 0x3f);
 		fcode_putPlimm(s, 0x3f, i);
 	}
@@ -2575,8 +2575,8 @@ int fcode_getInstrLength(const unsigned char *p)
 	if (len == 0) {
 		fprintf(stderr, "fcode_getInstrLength: internal error: ope=0x%02X 0x%02X 0x%02X\n", ope, p[1], p[2]);
 		exit(1);
-		// ‚±‚ê‚Éˆø‚Á‚©‚©‚é‚Ì‚ÍAƒAƒvƒŠƒR[ƒh‚ÌƒoƒO‚Å‚Í‚È‚¢.
-		// ‚È‚º‚È‚çfcode‚ÌŒ‹‰Ê‚Æ‚µ‚Ä¶¬‚µ‚½ƒR[ƒh‚Ì–â‘è‚¾‚©‚ç.
+		// ã“ã‚Œã«å¼•ã£ã‹ã‹ã‚‹ã®ã¯ã€ã‚¢ãƒ—ãƒªã‚³ãƒ¼ãƒ‰ã®ãƒã‚°ã§ã¯ãªã„.
+		// ãªãœãªã‚‰fcodeã®çµæœã¨ã—ã¦ç”Ÿæˆã—ãŸã‚³ãƒ¼ãƒ‰ã®å•é¡Œã ã‹ã‚‰.
 	}
 	return len;
 }
@@ -2592,16 +2592,16 @@ int fcode_initLabel(DecodeFcodeStr *s, unsigned char *q0, unsigned char *q1)
 		s->label[i].abs = -1;
 	}
 
-	// LB–½—ß‚ğ’T‚µ‚Äopt[]‚É“o˜^.
+	// LBå‘½ä»¤ã‚’æ¢ã—ã¦opt[]ã«ç™»éŒ².
 	for (q = q0; q < q1; ) {
 		if (*q == 0xf1) {
 			i = fcode_getInt32(&q[1]);
 			j = fcode_getInt32(&q[7]);
-			if (s->label[i].opt >= 0) goto err; // “ñd’è‹`‚ğŒŸo.
+			if (s->label[i].opt >= 0) goto err; // äºŒé‡å®šç¾©ã‚’æ¤œå‡º.
 			s->label[i].opt = j;
 			s->label[i].typ = PTR_TYP_CODE;
-			if (bp >= 16) goto err; // 16ˆÈã‚ÌLB–½—ß‚Ì˜A‘±‚É‚Í‘Î‰‚Å‚«‚È‚¢.
-			buf[bp++] = i; // LB–½—ß‚ª˜A‘±‚µ‚½‚çƒoƒbƒtƒ@‚É‚½‚ß‚é.
+			if (bp >= 16) goto err; // 16ä»¥ä¸Šã®LBå‘½ä»¤ã®é€£ç¶šã«ã¯å¯¾å¿œã§ããªã„.
+			buf[bp++] = i; // LBå‘½ä»¤ãŒé€£ç¶šã—ãŸã‚‰ãƒãƒƒãƒ•ã‚¡ã«ãŸã‚ã‚‹.
 		}
 		if (*q == 0xae) {
 			j = fcode_getInt32(&q[1]);
@@ -2613,7 +2613,7 @@ int fcode_initLabel(DecodeFcodeStr *s, unsigned char *q0, unsigned char *q1)
 		q += fcode_getInstrLength(q);
 	}
 
-	// opt=0,1‚É‚Â‚¢‚ÄAabs[]‚ğİ’è.
+	// opt=0,1ã«ã¤ã„ã¦ã€abs[]ã‚’è¨­å®š.
 	j = k = 0;
 	for (i = 0; i < DEFINES_MAXLABELS; i++) {
 		if (s->label[i].opt == 0) s->label[i].abs = j++;
@@ -2644,10 +2644,10 @@ int fcode_fixLabel(DecodeFcodeStr *s, unsigned char *q0, unsigned char *q1)
 				j = 0;
 				if (q[7] != 0xbf) j = 1;
 				if (uimmHigh == 0x80) {
-					// ‘Š‘Îw’è.
+					// ç›¸å¯¾æŒ‡å®š.
 					i = fcode_fixLabelRelative(s, lastLabel, i, j);
 				} else {
-					// â‘Îw’è.
+					// çµ¶å¯¾æŒ‡å®š.
 					i = fcode_fixLabelAbsolute(s, lastLabel, i, j);
 				}
 				if (i < 0) goto err;
@@ -2668,13 +2668,13 @@ fin:
 
 int fcode_fixLabelRelative(DecodeFcodeStr *s, int i, int imm, int min)
 {
-	// imm’l‚Ì•â³.
+	// immå€¤ã®è£œæ­£.
 	if ((imm & 0x00800000) != 0)
 		imm |= 0xff800000;
 	else
 		imm &= 0x007fffff;
 
-	// Œ´“_‚ÌŒŸõ.
+	// åŸç‚¹ã®æ¤œç´¢.
 	for (;;) {
 		if (i < 0) break;
 		if (min <= s->label[i].opt && s->label[i].opt <= 1) {

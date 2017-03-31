@@ -1,6 +1,6 @@
 #include "osecpu-vm.h"
 
-// ‚»‚Ì‘¼‚Ì–½—ß: 00, 2F, 3C, 3D, FD, FE
+// ãã®ä»–ã®å‘½ä»¤: 00, 2F, 3C, 3D, FD, FE
 
 void jitcInitOther(OsecpuJitc *jitc)
 {
@@ -106,13 +106,13 @@ int jitcStepOther(OsecpuJitc *jitc)
 	if (opecode == 0xfe) {	// remark
 		jitcSetHh4BufferSimple(jitc, 3);
 		imm = ip[1]; i = ip[2];
-		jitc->instrLength = 0; // ©‘O‚Åˆ—‚·‚é‚Ì‚ÅA‚±‚Ì’l‚Í0‚É‚·‚é.
+		jitc->instrLength = 0; // è‡ªå‰ã§å‡¦ç†ã™ã‚‹ã®ã§ã€ã“ã®å€¤ã¯0ã«ã™ã‚‹.
 		if (imm == 0x01ff && i == 0) {
 			ip[0] = 0x01ff;
 			jitc->instrLength = 1;
 		}
 		for (j = 0; j < i; j++)
-			hh4ReaderGetUnsigned(&jitc->hh4r); // “Ç‚İÌ‚Ä‚é.
+			hh4ReaderGetUnsigned(&jitc->hh4r); // èª­ã¿æ¨ã¦ã‚‹.
 		goto fin;
 	}
 	goto fin1;
@@ -127,8 +127,8 @@ int jitcAfterStepOther(OsecpuJitc *jitc)
 {
 	int i, retcode = 0;
 	if (jitc->hh4Buffer[0] != 0x2f) {
-		// –¢‰ğß‚Ì2FƒvƒŠƒtƒBƒNƒX‚ªc‚Á‚Ä‚¢‚È‚¢‚©’²¸.
-		// ‰ğß‚µ‚½‚ç0ƒNƒŠƒA‚·‚é‚Ì‚ªì–@.
+		// æœªè§£é‡ˆã®2Fãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹ãŒæ®‹ã£ã¦ã„ãªã„ã‹èª¿æŸ».
+		// è§£é‡ˆã—ãŸã‚‰0ã‚¯ãƒªã‚¢ã™ã‚‹ã®ãŒä½œæ³•.
 		for (i = 0; i < PREFIX2F_SIZE; i++) {
 			if (jitc->prefix2f[i] != 0)
 				retcode = JITC_BAD_PREFIX;
@@ -290,7 +290,7 @@ void execStepOther(OsecpuVm *vm)
 			goto fin;
 		}
 		vm->mallocTotal0 -= typSize0 * i / 8 + 32;
-		pctrl->liveSign++; // Šï”‚É‚·‚é.
+		pctrl->liveSign++; // å¥‡æ•°ã«ã™ã‚‹.
 		pctrl->dr1[0] = vm->dr[0];
 		pctrl->dr1[1] = vm->dr[1];
 		if ((pctrl->flags & 2) == 0) {
@@ -348,7 +348,7 @@ typedef struct _StackHeader {
 	unsigned char *bitF0p;
 } StackHeader;
 
-#define STACKHEADERSIZE16	((sizeof (StackHeader) + 15) & -16)	// ƒTƒCƒY‚ğ16ƒoƒCƒg’PˆÊ‚ÉØ‚èã‚°‚½‚à‚Ì.
+#define STACKHEADERSIZE16	((sizeof (StackHeader) + 15) & -16)	// ã‚µã‚¤ã‚ºã‚’16ãƒã‚¤ãƒˆå˜ä½ã«åˆ‡ã‚Šä¸Šã’ãŸã‚‚ã®.
 
 int osecpuVmStackInit(OsecpuVm *vm, int stackSize)
 {
@@ -369,8 +369,8 @@ fin:
 }
 
 int osecpuVmStackPush(OsecpuVm *vm, int r1, int bitR, int p1, int f1, int bitF)
-// r1, p1, f1 ‚ª•s³‚È’l‚Å‚Í‚È‚¢‚±‚Æ‚ÍAŒÄ‚Ño‚µŒ³‚ª•ÛØ‚·‚é.
-// bitR‚ª32ˆÈ‰º‚Å‚ ‚é‚±‚Æ‚ÆbitF‚ª64ˆÈ‰º‚Å‚ ‚é‚±‚Æ‚àŒÄ‚Ño‚µŒ³‚ª•ÛØ‚·‚é.
+// r1, p1, f1 ãŒä¸æ­£ãªå€¤ã§ã¯ãªã„ã“ã¨ã¯ã€å‘¼ã³å‡ºã—å…ƒãŒä¿è¨¼ã™ã‚‹.
+// bitRãŒ32ä»¥ä¸‹ã§ã‚ã‚‹ã“ã¨ã¨bitFãŒ64ä»¥ä¸‹ã§ã‚ã‚‹ã“ã¨ã‚‚å‘¼ã³å‡ºã—å…ƒãŒä¿è¨¼ã™ã‚‹.
 {
 	int retcode = 1;
 	int r1Size = r1 * sizeof (Int32), p1Size = p1 * sizeof (PReg);
@@ -414,7 +414,7 @@ int osecpuVmStackPush(OsecpuVm *vm, int r1, int bitR, int p1, int f1, int bitF)
 			bit = BIT_DISABLE_MEM;
 		else {
 			if (bit > bitR) {
-				bit = 0;	// ’l‚ª‰ó‚ê‚½.
+				bit = 0;	// å€¤ãŒå£Šã‚ŒãŸ.
 				psh->r0p[i] = 0;
 			}
 		}
@@ -429,7 +429,7 @@ int osecpuVmStackPush(OsecpuVm *vm, int r1, int bitR, int p1, int f1, int bitF)
 			bit = BIT_DISABLE_MEM;
 		else {
 			if (bit > bitF)
-				bit = bitF;	// Fxx‚Å‚Íbit‚ğ¬‚³‚¢‚Ù‚¤‚É‡‚í‚¹‚é‚¾‚¯‚Å‚æ‚¢...‚¢‚¢‚Ì‚¾‚ë‚¤‚©...
+				bit = bitF;	// Fxxã§ã¯bitã‚’å°ã•ã„ã»ã†ã«åˆã‚ã›ã‚‹ã ã‘ã§ã‚ˆã„...ã„ã„ã®ã ã‚ã†ã‹...
 		}
 		psh->bitF0p[i] = bit;
 	}
@@ -471,10 +471,10 @@ fin:
 typedef struct _TallocHeader {
 	int totalSize;
 	char *prevStackTop;
-	int r1, typ, len; // r1‚Í-1‚É‚·‚é.
+	int r1, typ, len; // r1ã¯-1ã«ã™ã‚‹.
 } TallocHeader;
 
-#define TALLOCHEADERSIZE16	((sizeof (TallocHeader) + 15) & -16)	// ƒTƒCƒY‚ğ16ƒoƒCƒg’PˆÊ‚ÉØ‚èã‚°‚½‚à‚Ì.
+#define TALLOCHEADERSIZE16	((sizeof (TallocHeader) + 15) & -16)	// ã‚µã‚¤ã‚ºã‚’16ãƒã‚¤ãƒˆå˜ä½ã«åˆ‡ã‚Šä¸Šã’ãŸã‚‚ã®.
 
 char *osecpuVmStackAlloc(OsecpuVm *vm, int totalSize, int typ, int len)
 {

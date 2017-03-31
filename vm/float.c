@@ -1,6 +1,6 @@
 #include "osecpu-vm.h"
 
-// •‚“®¬”“_–½—ß: 40-43, 48-4D, 50-53
+// æµ®å‹•å°æ•°ç‚¹å‘½ä»¤: 40-43, 48-4D, 50-53
 
 void jitcInitFloat(OsecpuJitc *jitc)
 {
@@ -90,7 +90,7 @@ int jitcStepFloat(OsecpuJitc *jitc)
 		jitcStep_checkFxx(pRC, f1);
 		jitcStep_checkBitsF(pRC, bit0);
 		jitcStep_checkFxx(pRC, f0);
-		goto fin; // bit0‚Æbit1‚Ì‘å¬ŠÖŒW‚É§–ñ‚Í‚È‚¢. bit0>bit1‚Ìê‡‚Í¸“x‚ðŠg’£‚·‚é‚±‚Æ‚É‚È‚é.
+		goto fin; // bit0ã¨bit1ã®å¤§å°é–¢ä¿‚ã«åˆ¶ç´„ã¯ãªã„. bit0>bit1ã®å ´åˆã¯ç²¾åº¦ã‚’æ‹¡å¼µã™ã‚‹ã“ã¨ã«ãªã‚‹.
 	}
 	if (opecode == 0x42) {	// CNVIF
 		jitcSetHh4BufferSimple(jitc, 5);
@@ -168,7 +168,7 @@ void execStepFloat(OsecpuVm *vm)
 			f = ip[3]; bit = ip[4];
 			union {
 				float f32;
-				int i32; // ‚±‚±‚Ìint‚Í³Šm‚É32bit‚Å‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢‚Ì‚Å’ˆÓ.
+				int i32; // ã“ã“ã®intã¯æ­£ç¢ºã«32bitã§ãªã‘ã‚Œã°ã„ã‘ãªã„ã®ã§æ³¨æ„.
 			} u32;
 			u32.i32 = ip[2];
 			vm->f[f] = (double) u32.f32;
@@ -180,9 +180,9 @@ void execStepFloat(OsecpuVm *vm)
 			f = ip[4]; bit = ip[5];
 			union {
 				double f64;
-				int i32[2]; // ‚±‚±‚Ìint‚Í³Šm‚É32bit‚Å‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢‚Ì‚Å’ˆÓ.
+				int i32[2]; // ã“ã“ã®intã¯æ­£ç¢ºã«32bitã§ãªã‘ã‚Œã°ã„ã‘ãªã„ã®ã§æ³¨æ„.
 			} u64;
-			u64.i32[1] = ip[2]; // ƒŠƒgƒ‹ƒGƒ“ƒfƒBƒAƒ“‚ð‘z’è.
+			u64.i32[1] = ip[2]; // ãƒªãƒˆãƒ«ã‚¨ãƒ³ãƒ‡ã‚£ã‚¢ãƒ³ã‚’æƒ³å®š.
 			u64.i32[0] = ip[3];
 			vm->f[f] = u64.f64;
 			vm->bitF[f] = bit;
@@ -230,7 +230,7 @@ void execStepFloat(OsecpuVm *vm)
 			jitcSetRetCode(&vm->errorCode, EXEC_BAD_BITS);
 			goto fin;
 		}
-		i = 0;	// gcc‚ÌŒx‚ð–Ù‚ç‚¹‚é‚½‚ß.
+		i = 0;	// gccã®è­¦å‘Šã‚’é»™ã‚‰ã›ã‚‹ãŸã‚.
 		if (opecode == 0x48) i = vm->f[f1] == vm->f[f2];
 		if (opecode == 0x49) i = vm->f[f1] != vm->f[f2];
 		if (opecode == 0x4a) i = vm->f[f1] <  vm->f[f2];

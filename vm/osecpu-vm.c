@@ -1,18 +1,18 @@
 #include "osecpu-vm.h"
 
-// initŠÖŒW.
+// inité–¢ä¿‚.
 
 void definesInit(Defines *def)
 {
 	int i;
 	for (i = 0; i < DEFINES_MAXLABELS; i++) {
-		def->label[i].typ = PTR_TYP_INVALID; // –¢g—p.
-		def->label[i].opt = -1; // –¢g—p.
+		def->label[i].typ = PTR_TYP_INVALID; // æœªä½¿ç”¨.
+		def->label[i].opt = -1; // æœªä½¿ç”¨.
 	}
 	return;
 }
 
-// hh4ŠÖŒW.
+// hh4é–¢ä¿‚.
 
 void hh4ReaderInit(Hh4Reader *hh4r, void *p, int half, void *p1, int half1)
 {
@@ -58,7 +58,7 @@ Int32 hh4ReaderGetUnsigned(Hh4Reader *hh4r)
 {
 	int i = hh4ReaderGet4bit(hh4r), len = 3;
 	if (i <= 0x6)
-		;	// 0xxxŒ^
+		;	// 0xxxå‹
 	else if (i == 0x7) {
 		len = hh4ReaderGetUnsigned(hh4r) * 4;
 		if (len > 32) {
@@ -71,21 +71,21 @@ Int32 hh4ReaderGetUnsigned(Hh4Reader *hh4r)
 			i <<= 4;
 			i |= hh4ReaderGet4bit(hh4r);
 		}
-	} else if (i <= 0xb) {	// 10xx_xxxxŒ^
+	} else if (i <= 0xb) {	// 10xx_xxxxå‹
 		i = i << 4 | hh4ReaderGet4bit(hh4r);
 		len = 6;
 		i &= 0x3f;
-	} else if (i <= 0xd) {	// 110x_xxxx_xxxxŒ^
+	} else if (i <= 0xd) {	// 110x_xxxx_xxxxå‹
 		i = i << 8 | hh4ReaderGet4bit(hh4r) << 4;
 		i |= hh4ReaderGet4bit(hh4r);
 		len = 9;
 		i &= 0x1ff;
-	} else if (i == 0xe) {	// 1110_xxxx_xxxx_xxxxŒ^
+	} else if (i == 0xe) {	// 1110_xxxx_xxxx_xxxxå‹
 		i = hh4ReaderGet4bit(hh4r) << 8;
 		i |= hh4ReaderGet4bit(hh4r) << 4;
 		i |= hh4ReaderGet4bit(hh4r);
 		len = 12;
-	} else { // 0x0f‚Í“Ç‚İ”ò‚Î‚·.
+	} else { // 0x0fã¯èª­ã¿é£›ã°ã™.
 		i = hh4ReaderGetUnsigned(hh4r);
 		len = hh4r->length;
 	}
@@ -98,7 +98,7 @@ Int32 hh4ReaderGetSigned(Hh4Reader *hh4r)
 	Int32 i = hh4ReaderGetUnsigned(hh4r);
 	int len = hh4r->length;
 	if (0 < len && len <= 31 && i >= (1 << (len - 1)))
-		i -= 1 << len; // MSB‚ª1‚È‚çˆø‚«Z‚µ‚Ä•‰”‚É‚·‚é.
+		i -= 1 << len; // MSBãŒ1ãªã‚‰å¼•ãç®—ã—ã¦è² æ•°ã«ã™ã‚‹.
 	return i;
 }
 
@@ -111,7 +111,7 @@ Int32 hh4ReaderGet4Nbit(Hh4Reader *hh4r, int n)
 	return value;
 }
 
-// bitReaderŠÖŒW.
+// bitReaderé–¢ä¿‚.
 
 void bitReaderInit(BitReader *br, Hh4Reader *hh4r)
 {
@@ -149,7 +149,7 @@ int bitReaderGetNbitSigned(BitReader *br, int n)
 	return value;
 }
 
-// jitcŠÖŒW.
+// jitcé–¢ä¿‚.
 
 void jitcInitDstLogSetPhase(OsecpuJitc *jitc, int phase)
 {
@@ -171,7 +171,7 @@ void jitcInitDstLogSetPhase(OsecpuJitc *jitc, int phase)
 void jitcSetRetCode(int *pRC, int value)
 {
 	if (*pRC <= 0)
-		*pRC = value; // ‚à‚µ0ˆÈ‰º‚È‚çã‘‚«‚·‚é, ³‚È‚ç‘‚«Š·‚¦‚È‚¢.
+		*pRC = value; // ã‚‚ã—0ä»¥ä¸‹ãªã‚‰ä¸Šæ›¸ãã™ã‚‹, æ­£ãªã‚‰æ›¸ãæ›ãˆãªã„.
 	return;
 }
 
@@ -210,7 +210,7 @@ fin:
 	retcode = jitcAfterStepExtend(jitc);	if (retcode > 0) goto fin1;
 	if (jitc->instrLength > 0) {
 		i = jitc->dstLogIndex;
-		jitc->dstLog[i] = jitc->dst; // ƒGƒ‰[‚Ì‚È‚©‚Á‚½–½—ß‚Í‹L˜^‚·‚é.
+		jitc->dstLog[i] = jitc->dst; // ã‚¨ãƒ©ãƒ¼ã®ãªã‹ã£ãŸå‘½ä»¤ã¯è¨˜éŒ²ã™ã‚‹.
 		jitc->dstLogIndex = (i + 1) % JITC_DSTLOG_SIZE;
 		jitc->dst += jitc->instrLength;
 	}
@@ -226,7 +226,7 @@ int jitcAll(OsecpuJitc *jitc)
 	definesInit(jitc->defines);
 	jitcInitDstLogSetPhase(jitc, 0);
 	for (;;) {
-		// —‘z‚Í“K“–‚ÈãŒÀ‚ğŒˆ‚ß‚ÄA‹x‚İ‹x‚İ‚Å‚â‚é‚×‚«‚©‚à‚µ‚ê‚È‚¢.
+		// ç†æƒ³ã¯é©å½“ãªä¸Šé™ã‚’æ±ºã‚ã¦ã€ä¼‘ã¿ä¼‘ã¿ã§ã‚„ã‚‹ã¹ãã‹ã‚‚ã—ã‚Œãªã„.
 		if (hh4ReaderEnd(&jitc->hh4r) != 0) break;
 		jitcStep(jitc);
 		if (jitc->errorCode != 0) break;
@@ -236,7 +236,7 @@ int jitcAll(OsecpuJitc *jitc)
 	jitc->dst = dst0;
 	jitcInitDstLogSetPhase(jitc, 1);
 	for (;;) {
-		// —‘z‚Í“K“–‚ÈãŒÀ‚ğŒˆ‚ß‚ÄA‹x‚İ‹x‚İ‚Å‚â‚é‚×‚«‚©‚à‚µ‚ê‚È‚¢.
+		// ç†æƒ³ã¯é©å½“ãªä¸Šé™ã‚’æ±ºã‚ã¦ã€ä¼‘ã¿ä¼‘ã¿ã§ã‚„ã‚‹ã¹ãã‹ã‚‚ã—ã‚Œãªã„.
 		jitcStep(jitc);
 		if (jitc->errorCode != 0) break;
 		if (hh4ReaderEnd(&jitc->hh4r) != 0) break;
@@ -245,7 +245,7 @@ fin:
 	return jitc->errorCode;
 }
 
-// execŠÖŒW.
+// execé–¢ä¿‚.
 
 int execStep(OsecpuVm *vm)
 {
@@ -282,7 +282,7 @@ int execStep(OsecpuVm *vm)
 	execStepFloat(vm);		if (ip != vm->ip || vm->errorCode != 0) goto fin;
 	execStepExtend(vm);		if (ip != vm->ip || vm->errorCode != 0) goto fin;
 
-	fprintf(stderr, "Error: execStep: opecode=0x%02X\n", *ip); // “à•”ƒGƒ‰[.
+	fprintf(stderr, "Error: execStep: opecode=0x%02X\n", *ip); // å†…éƒ¨ã‚¨ãƒ©ãƒ¼.
 	exit(1);
 fin:
 	return vm->errorCode;
@@ -294,7 +294,7 @@ int execAll(OsecpuVm *vm)
 	for (i = 0; i < PREFIX2F_SIZE; i++)
 		vm->prefix2f[i] = 0;
 	for (;;) {
-		// —‘z‚Í“K“–‚ÈãŒÀ‚ğŒˆ‚ß‚ÄA‹x‚İ‹x‚İ‚Å‚â‚é‚×‚«‚©‚à‚µ‚ê‚È‚¢.
+		// ç†æƒ³ã¯é©å½“ãªä¸Šé™ã‚’æ±ºã‚ã¦ã€ä¼‘ã¿ä¼‘ã¿ã§ã‚„ã‚‹ã¹ãã‹ã‚‚ã—ã‚Œãªã„.
 		execStep(vm);
 		if (vm->errorCode != 0) {
 			if (vm->disableDebug == 0 && vm->errorCode != EXEC_SRC_OVERRUN && vm->errorCode != EXEC_EXIT) {
@@ -308,7 +308,7 @@ int execAll(OsecpuVm *vm)
 }
 
 
-// ŠÖ˜Aƒc[ƒ‹ŠÖ”.
+// é–¢é€£ãƒ„ãƒ¼ãƒ«é–¢æ•°.
 
 unsigned char *hh4StrToBin(unsigned char *src, unsigned char *src1, unsigned char *dst, unsigned char *dst1)
 {

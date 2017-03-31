@@ -1,6 +1,6 @@
 #include "osecpu-vm.h"
 
-// ®”–½—ß: 02, 08-09, 10-16, 18-1B, 20-27, 2F, FD
+// æ•´æ•°å‘½ä»¤: 02, 08-09, 10-16, 18-1B, 20-27, 2F, FD
 
 int getTypBitInteger(int typ)
 {
@@ -13,17 +13,17 @@ int getTypBitInteger(int typ)
 }
 
 void getTypInfoInteger(int typ, int *typSize0, int *typSize1, int *typSign)
-// typSize0: Œö®ƒTƒCƒY(ƒrƒbƒg’PˆÊ).
-// typSize1: “à•”ƒTƒCƒY(ƒoƒCƒg’PˆÊ).
-// typSign:  •„†‚Ì—L–³(0‚Í•„†‚È‚µ).
+// typSize0: å…¬å¼ã‚µã‚¤ã‚º(ãƒ“ãƒƒãƒˆå˜ä½).
+// typSize1: å†…éƒ¨ã‚µã‚¤ã‚º(ãƒã‚¤ãƒˆå˜ä½).
+// typSign:  ç¬¦å·ã®æœ‰ç„¡(0ã¯ç¬¦å·ãªã—).
 {
 	*typSize0 = *typSize1 = -1;
 	if (2 <= typ && typ <= 21) {
 		int bytes;
 		if ((typ & 1) == 0)
-			*typSign = -1; // typ‚ª‹ô”‚È‚ç•„†‚ ‚è.
+			*typSign = -1; // typãŒå¶æ•°ãªã‚‰ç¬¦å·ã‚ã‚Š.
 		else
-			*typSign = 0; // typ‚ªŠï”‚È‚ç•„†‚È‚µ.
+			*typSign = 0; // typãŒå¥‡æ•°ãªã‚‰ç¬¦å·ãªã—.
 		*typSize0 = getTypBitInteger(typ);
 		bytes = (*typSize0 + 7) / 8;
 		if (bytes == 3) bytes = 4;
@@ -58,12 +58,12 @@ int jitcStepInteger(OsecpuJitc *jitc)
 	}
 	if (opecode == 0x04) { /* CND(Rxx); */
 		jitcSetHh4BufferSimple(jitc, 2);
-		ip[2] = 0; // skip‚·‚é–½—ß’·.
+		ip[2] = 0; // skipã™ã‚‹å‘½ä»¤é•·.
 		jitc->instrLength = 3;
 		r = ip[1];
 		jitcStep_checkRxx(pRC, r);
-		Hh4Reader hh4r = jitc->hh4r; // ‚±‚ê‚ğg‚Á‚Ä‚àjitc‚Ìhh4r‚Íi‚Ü‚È‚¢.
-		i = hh4ReaderGetUnsigned(&hh4r); // Ÿ‚Ìopecode.
+		Hh4Reader hh4r = jitc->hh4r; // ã“ã‚Œã‚’ä½¿ã£ã¦ã‚‚jitcã®hh4rã¯é€²ã¾ãªã„.
+		i = hh4ReaderGetUnsigned(&hh4r); // æ¬¡ã®opecode.
 		if (i == 0x00 || i == 0x01 || i == 0x04 || i == 0x2e)
 			jitcSetRetCode(pRC, JITC_BAD_CND);
 		jitc->ope04 = jitc->dst;
@@ -80,7 +80,7 @@ int jitcStepInteger(OsecpuJitc *jitc)
 		jitcStep_checkRxxNotR3F(pRC, r);
 		jitcStep_checkBits32(pRC, bit);
 		if (jitc->prefix2f[0] != 0 && jitc->prefix2f[1] != 0)
-			jitcSetRetCode(pRC, JITC_BAD_PREFIX);	// 2F-nŒnƒvƒŠƒtƒBƒNƒX‚Í1ŒÂ‚Ü‚Å.
+			jitcSetRetCode(pRC, JITC_BAD_PREFIX);	// 2F-nç³»ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹ã¯1å€‹ã¾ã§.
 		jitc->prefix2f[0] = 0; // 2F-0.
 		jitc->prefix2f[1] = 0; // 2F-1.
 		goto fin;
@@ -102,7 +102,7 @@ int jitcStepInteger(OsecpuJitc *jitc)
 				j++;
 		}
 		if (j > 1)
-			jitcSetRetCode(pRC, JITC_BAD_PREFIX);	// 2F-nŒnƒvƒŠƒtƒBƒNƒX‚Í1ŒÂ‚Ü‚Å.
+			jitcSetRetCode(pRC, JITC_BAD_PREFIX);	// 2F-nç³»ãƒ—ãƒªãƒ•ã‚£ã‚¯ã‚¹ã¯1å€‹ã¾ã§.
 		jitc->prefix2f[0] = 0; // 2F-0.
 		jitc->prefix2f[1] = 0; // 2F-1.
 		jitc->prefix2f[2] = 0; // 2F-2.
@@ -154,22 +154,22 @@ int jitcAfterStepInteger(OsecpuJitc *jitc)
 	int opecode = jitc->hh4Buffer[0], retcode = 0;
 	Int32 *dst04 = jitc->ope04;
 	if (jitc->ope04 != NULL && opecode != 0x04 && opecode != 0x2f) {
-		// CND–½—ß‚Ì’¼Œã‚Ì–½—ß‚ğŒŸo.
-		dst04[2] = (jitc->dst + jitc->instrLength) - (dst04 + 3); // ’¼Œã‚Ì–½—ß‚Ì–½—ß’·.
+		// CNDå‘½ä»¤ã®ç›´å¾Œã®å‘½ä»¤ã‚’æ¤œå‡º.
+		dst04[2] = (jitc->dst + jitc->instrLength) - (dst04 + 3); // ç›´å¾Œã®å‘½ä»¤ã®å‘½ä»¤é•·.
 		jitc->ope04 = NULL;
 	}
 	return retcode;
 }
 
 Int32 execStep_checkBitsRange(Int32 value, int bit, OsecpuVm *vm, int bit1, int bit2)
-// ŠÖ”–¼‚Ícheck‚É‚È‚Á‚Ä‚¢‚é‚à‚Ì‚ÌAprefix2f[0]!=0‚Ìê‡‚Íƒ`ƒFƒbƒN‚ğƒNƒŠƒA‚Å‚«‚é‚æ‚¤‚È’l‚É•â³‚ğ‚·‚é.
-// ‚Â‚Ü‚èprefix2f[0]!=0‚Ìê‡‚Íƒ`ƒFƒbƒN‚·‚é‚Ì‚Å‚Í‚È‚­’l‚ğ•â³‚·‚é.
+// é–¢æ•°åã¯checkã«ãªã£ã¦ã„ã‚‹ã‚‚ã®ã®ã€prefix2f[0]!=0ã®å ´åˆã¯ãƒã‚§ãƒƒã‚¯ã‚’ã‚¯ãƒªã‚¢ã§ãã‚‹ã‚ˆã†ãªå€¤ã«è£œæ­£ã‚’ã™ã‚‹.
+// ã¤ã¾ã‚Šprefix2f[0]!=0ã®å ´åˆã¯ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã®ã§ã¯ãªãå€¤ã‚’è£œæ­£ã™ã‚‹.
 {
 	int max, min;
 	if (bit1 != BIT_DISABLE_REG && bit2 != BIT_DISABLE_REG && vm->prefix2f[0] == 0) {
-		max = 1 << (bit - 1); // —á: bits=8‚¾‚Æmax=128‚É‚È‚é.
-		max--; // —á: bits=8‚¾‚Æmax=127‚É‚È‚é.
-		min = - max - 1; // —á: bits=8‚¾‚Æmin=-128‚É‚È‚éB
+		max = 1 << (bit - 1); // ä¾‹: bits=8ã ã¨max=128ã«ãªã‚‹.
+		max--; // ä¾‹: bits=8ã ã¨max=127ã«ãªã‚‹.
+		min = - max - 1; // ä¾‹: bits=8ã ã¨min=-128ã«ãªã‚‹ã€‚
 		if (!(min <= value && value <= max))
 			jitcSetRetCode(&vm->errorCode, EXEC_BITS_RANGE_OVER);
 	} else {
@@ -235,16 +235,16 @@ void execStepInteger(OsecpuVm *vm)
 		}
 		if (vm->prefix2f[1] == 0) {
 			if (mbit < tbit && mbit < bit)
-				jitcSetRetCode(&vm->errorCode, EXEC_BAD_BITS);	// •sŠm’èƒrƒbƒg‚ÌQÆ‚ª‚ ‚éê‡.
+				jitcSetRetCode(&vm->errorCode, EXEC_BAD_BITS);	// ä¸ç¢ºå®šãƒ“ãƒƒãƒˆã®å‚ç…§ãŒã‚ã‚‹å ´åˆ.
 		} else {
-			// 2F-1: ƒŒƒWƒXƒ^‘Ş”ğ—p‚ÌƒŠ[ƒhƒ‰ƒCƒg.
+			// 2F-1: ãƒ¬ã‚¸ã‚¹ã‚¿é€€é¿ç”¨ã®ãƒªãƒ¼ãƒ‰ãƒ©ã‚¤ãƒˆ.
 			if (bit > mbit)
 				bit = mbit;
 			vm->prefix2f[1] = 0;
 		}
 		vm->bit[r] = bit;
 		if (tbit > bit)
-			vm->r[r] = execStep_checkBitsRange(vm->r[r], bit, vm, 0, 0); // •”•ªƒŠ[ƒh‚Ìê‡‚ÍAƒSƒ~ƒrƒbƒg‚ğÁ‚·.
+			vm->r[r] = execStep_checkBitsRange(vm->r[r], bit, vm, 0, 0); // éƒ¨åˆ†ãƒªãƒ¼ãƒ‰ã®å ´åˆã¯ã€ã‚´ãƒŸãƒ“ãƒƒãƒˆã‚’æ¶ˆã™.
 		ip += 6;
 		goto fin;
 	}
@@ -254,7 +254,7 @@ void execStepInteger(OsecpuVm *vm)
 		if (vm->errorCode != 0) goto fin;
 		getTypInfoInteger(typ, &typSize0, &typSize1, &typSign);
 		if (vm->prefix2f[2] != 0) {
-			// 2F-2: ƒƒ‚ƒŠ‚Ìbit‚ğ0‚É‚·‚é.
+			// 2F-2: ãƒ¡ãƒ¢ãƒªã®bitã‚’0ã«ã™ã‚‹.
 			*(vm->p[p].bit) = 0;
 			vm->prefix2f[2] = 0;
 			ip += 6;
@@ -265,22 +265,22 @@ void execStepInteger(OsecpuVm *vm)
 			goto fin;
 		}
 		if (typSign == 0 && vm->r[r] < 0) {
-			// ƒ}ƒCƒiƒX‚Ì”’l‚ğunsigned‚Ètyp‚É‘‚«‚à‚¤‚Æ‚µ‚½.
-			// (ˆÈ‰º‚Ìif•¶‚Å‚Í32bit‚Ì‚Æ‚«‚Ì”»’è‚ª‚Å‚«‚È‚¢‚Ì‚ÅA‚±‚ê‚Íƒ€ƒ_‚Å‚Í‚È‚¢.)
+			// ãƒã‚¤ãƒŠã‚¹ã®æ•°å€¤ã‚’unsignedãªtypã«æ›¸ãè¾¼ã‚‚ã†ã¨ã—ãŸ.
+			// (ä»¥ä¸‹ã®ifæ–‡ã§ã¯32bitã®ã¨ãã®åˆ¤å®šãŒã§ããªã„ã®ã§ã€ã“ã‚Œã¯ãƒ ãƒ€ã§ã¯ãªã„.)
 			if (vm->prefix2f[0] == 0 && vm->prefix2f[1] == 0) {
-				// ’Êíƒ‚[ƒh.
+				// é€šå¸¸ãƒ¢ãƒ¼ãƒ‰.
 				jitcSetRetCode(&vm->errorCode, EXEC_BITS_RANGE_OVER); 
 				goto fin;
 			}
 			if (vm->prefix2f[1] != 0) {
-				// 2F-1: ƒŒƒWƒXƒ^‘Ş”ğ—p‚ÌƒŠ[ƒhƒ‰ƒCƒg.
-				*(vm->p[p].bit) = 0; // ’l‚ª‰ó‚ê‚½‚Ì‚ÅŠ®‘S‚É•s’è‚É‚·‚é.
+				// 2F-1: ãƒ¬ã‚¸ã‚¹ã‚¿é€€é¿ç”¨ã®ãƒªãƒ¼ãƒ‰ãƒ©ã‚¤ãƒˆ.
+				*(vm->p[p].bit) = 0; // å€¤ãŒå£Šã‚ŒãŸã®ã§å®Œå…¨ã«ä¸å®šã«ã™ã‚‹.
 				vm->prefix2f[1] = 0;
 				ip += 6;
 				goto fin;
 			}
 		}
-		tmax = 0; // gcc‚ÌŒx‚ğ–Ù‚ç‚¹‚é‚½‚ß.
+		tmax = 0; // gccã®è­¦å‘Šã‚’é»™ã‚‰ã›ã‚‹ãŸã‚.
 		if (typSize0 < 32) {
 			tmax = (1 << typSize0) - 1;
 			tmin = 0;
@@ -289,14 +289,14 @@ void execStepInteger(OsecpuVm *vm)
 				tmin = ~tmax;
 			}
 			if (vm->prefix2f[0] == 0 && vm->prefix2f[1] == 0) {
-				// ’Êíƒ‚[ƒh.
+				// é€šå¸¸ãƒ¢ãƒ¼ãƒ‰.
 				if (!(tmin <= vm->r[r] && vm->r[r] <= tmax))
 					jitcSetRetCode(&vm->errorCode, EXEC_BITS_RANGE_OVER);
 			}
 			if (vm->prefix2f[1] != 0) {
-				// 2F-1: ƒŒƒWƒXƒ^‘Ş”ğ—p‚ÌƒŠ[ƒhƒ‰ƒCƒg.
+				// 2F-1: ãƒ¬ã‚¸ã‚¹ã‚¿é€€é¿ç”¨ã®ãƒªãƒ¼ãƒ‰ãƒ©ã‚¤ãƒˆ.
 				if (!(tmin <= vm->r[r] && vm->r[r] <= tmax)) {
-					*(vm->p[p].bit) = 0; // ’l‚ª‰ó‚ê‚½‚Ì‚ÅŠ®‘S‚É•s’è‚É‚·‚é.
+					*(vm->p[p].bit) = 0; // å€¤ãŒå£Šã‚ŒãŸã®ã§å®Œå…¨ã«ä¸å®šã«ã™ã‚‹.
 					vm->prefix2f[1] = 0;
 					ip += 6;
 					goto fin;
@@ -311,7 +311,7 @@ void execStepInteger(OsecpuVm *vm)
 		*(vm->p[p].bit) = mbit;
 		i = vm->r[r];
 		if (vm->prefix2f[0] != 0) {
-			// 2F-0: ƒ}ƒXƒNƒ‰ƒCƒg.
+			// 2F-0: ãƒã‚¹ã‚¯ãƒ©ã‚¤ãƒˆ.
 			if (typSize0 < 32) {
 				if (typSign == 0)
 					i &= tmax;
@@ -442,9 +442,9 @@ void execStepInteger(OsecpuVm *vm)
 			goto fin;
 		}
 		if (bit1 < 32) {
-			// ”äŠr‘ÎÛ‚Ì·‚ªA•„†•t®”‚Åbit1‚Ì”ÍˆÍ‚Ì®”‚Å•\Œ»‰Â”\‚©‚Ç‚¤‚©‚ğƒ`ƒFƒbƒN.
-			// ‚Ç‚¿‚ç‚©‚ç‚Ç‚¿‚ç‚ğˆø‚­‚Ì‚©‚Í‹K’è‚µ‚È‚¢‚Ì‚ÅA‚½‚Æ‚¦‚Î4ƒrƒbƒg‚Ìê‡‚Ìƒ`ƒFƒbƒN‚ÍA
-			// -8`+7‚Å‚Í‚È‚­A-7`+7‚É‚È‚é.
+			// æ¯”è¼ƒå¯¾è±¡ã®å·®ãŒã€ç¬¦å·ä»˜æ•´æ•°ã§bit1ã®ç¯„å›²ã®æ•´æ•°ã§è¡¨ç¾å¯èƒ½ã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯.
+			// ã©ã¡ã‚‰ã‹ã‚‰ã©ã¡ã‚‰ã‚’å¼•ãã®ã‹ã¯è¦å®šã—ãªã„ã®ã§ã€ãŸã¨ãˆã°4ãƒ“ãƒƒãƒˆã®å ´åˆã®ãƒã‚§ãƒƒã‚¯ã¯ã€
+			// -8ã€œ+7ã§ã¯ãªãã€-7ã€œ+7ã«ãªã‚‹.
 			i32 = vm->r[r1] - vm->r[r2];
 			tmp32 = (1 << bit1) - 1;
 			if (!(- tmp32 <= i32 && i32 <= tmp32)) {
@@ -452,7 +452,7 @@ void execStepInteger(OsecpuVm *vm)
 				goto fin;
 			}
 		}
-		i = 0; // gcc‚ÌŒx‚ğ–Ù‚ç‚¹‚é‚½‚ß.
+		i = 0; // gccã®è­¦å‘Šã‚’é»™ã‚‰ã›ã‚‹ãŸã‚.
 		if (opecode == 0x20)
 			i = vm->r[r1] == vm->r[r2];
 		if (opecode == 0x21)
@@ -505,19 +505,19 @@ void jitcStep_checkRxxNotR3F(int *pRC, int rxx)
 }
 
 Int32 execStep_signBitExtend(Int32 value, int bit)
-// bit‚Í•„†ƒrƒbƒg‚Ì‚ ‚éˆÊ’u‚ÅA0`31‚ğ‘z’è.
+// bitã¯ç¬¦å·ãƒ“ãƒƒãƒˆã®ã‚ã‚‹ä½ç½®ã§ã€0ã€œ31ã‚’æƒ³å®š.
 {
 	if (bit >= 0) {
 		Int32 mask = (-1) << bit;
 		if ((value & (1 << bit)) == 0) {
-			// •„†ƒrƒbƒg‚ª0‚¾‚Á‚½.
+			// ç¬¦å·ãƒ“ãƒƒãƒˆãŒ0ã ã£ãŸ.
 			value &= ~mask;
 		} else {
-			// •„†ƒrƒbƒg‚ª1‚¾‚Á‚½.
+			// ç¬¦å·ãƒ“ãƒƒãƒˆãŒ1ã ã£ãŸ.
 			value |=  mask;
 		}
 	} else
-		value = 0; // bit‚ª•‰‚Ìê‡.
+		value = 0; // bitãŒè² ã®å ´åˆ.
 	return value;
 }
 

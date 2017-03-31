@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef int Int32; // 32bitˆÈã‚Å‚ ‚ê‚Î‚æ‚¢i64bitˆÈã‚Å‚à‚æ‚¢j.
+typedef int Int32; // 32bitä»¥ä¸Šã§ã‚ã‚Œã°ã‚ˆã„ï¼ˆ64bitä»¥ä¸Šã§ã‚‚ã‚ˆã„ï¼‰.
 
 #define DEFINES_MAXLABELS	4096
 
@@ -19,7 +19,7 @@ typedef struct _PReg {
 	unsigned char *p0, *p1;
 	int liveSign;
 	PtrCtrl *ptrCtrl;
-	int flags;	/* read/write‚È‚Ç */
+	int flags;	/* read/writeãªã© */
 	unsigned char *bit;
 } PReg;
 
@@ -29,7 +29,7 @@ typedef struct _Label {
 } Label;
 
 typedef struct _Defines {
-	// ƒ‰ƒxƒ‹‚â\‘¢‘Ì‚Ì’è‹`.
+	// ãƒ©ãƒ™ãƒ«ã‚„æ§‹é€ ä½“ã®å®šç¾©.
 	Label label[DEFINES_MAXLABELS];
 } Defines;
 
@@ -57,8 +57,8 @@ typedef struct _OsecpuJitc {
 	Hh4Reader hh4r;
 	Int32 hh4Buffer[16];
 	Int32 *dst, *dst1, *dstLog[JITC_DSTLOG_SIZE];
-		// dstLog[]‚Í–½—ß‚ğ­‚µ‚³‚©‚Ì‚Ú‚è‚½‚¢‚Æ‚«‚Ég‚¤.
-		//   ‚½‚Æ‚¦‚Îdata(2E)‚ª—˜—p‚·‚é.
+		// dstLog[]ã¯å‘½ä»¤ã‚’å°‘ã—ã•ã‹ã®ã¼ã‚ŠãŸã„ã¨ãã«ä½¿ã†.
+		//   ãŸã¨ãˆã°data(2E)ãŒåˆ©ç”¨ã™ã‚‹.
 	int errorCode, instrLength;
 	Int32 dr[4]; // Other
 	Int32 *ope04; // Integer
@@ -110,7 +110,7 @@ int bitReaderGetNbitSigned(BitReader *br, int n);
 void jitcInitDstLogSetPhase(OsecpuJitc *jitc, int phase);
 void jitcSetRetCode(int *pRC, int value);
 void jitcSetHh4BufferSimple(OsecpuJitc *jitc, int length);
-int jitcStep(OsecpuJitc *jitc); // OSECPU–½—ß‚ğˆê‚Â‚¾‚¯ŒŸØ‚·‚é. ƒGƒ‰[‚ª‚È‚¯‚ê‚Î0‚ğ•Ô‚·.
+int jitcStep(OsecpuJitc *jitc); // OSECPUå‘½ä»¤ã‚’ä¸€ã¤ã ã‘æ¤œè¨¼ã™ã‚‹. ã‚¨ãƒ©ãƒ¼ãŒãªã‘ã‚Œã°0ã‚’è¿”ã™.
 int jitcAll(OsecpuJitc *jitc);
 
 #define JITC_BAD_OPECODE		1
@@ -134,12 +134,12 @@ int jitcAll(OsecpuJitc *jitc);
 #define JITC_BAD_ENTER			19
 #define JITC_DIVISION_BY_ZERO	20
 
-int execStep(OsecpuVm *r); // ŒŸØÏ‚İ‚ÌOSECPU–½—ß‚ğˆê‚Â‚¾‚¯Às‚·‚é.
+int execStep(OsecpuVm *r); // æ¤œè¨¼æ¸ˆã¿ã®OSECPUå‘½ä»¤ã‚’ä¸€ã¤ã ã‘å®Ÿè¡Œã™ã‚‹.
 int execAll(OsecpuVm *vm);
 
 #define EXEC_BAD_BITS			 1+256
 #define EXEC_BITS_RANGE_OVER	 2+256
-#define EXEC_BAD_R2				 3+256	// SBX, SHL, SAR‚Ìr2‚ª•s“KØ.
+#define EXEC_BAD_R2				 3+256	// SBX, SHL, SARã®r2ãŒä¸é©åˆ‡.
 #define EXEC_DIVISION_BY_ZERO	 4+256
 #define EXEC_SRC_OVERRUN		 5+256
 #define EXEC_TYP_MISMATCH		 6+256
@@ -168,11 +168,11 @@ int execAll(OsecpuVm *vm);
 #define PTR_TYP_NULL			0
 #define PTR_TYP_CODE			-1
 #define PTR_TYP_NATIVECODE		-2
-#define PTR_TYP_INVALID			-3	// •s’è’ló‘Ô.
+#define PTR_TYP_INVALID			-3	// ä¸å®šå€¤çŠ¶æ…‹.
 
 unsigned char *hh4StrToBin(unsigned char *src, unsigned char *src1, unsigned char *dst, unsigned char *dst1);
 
-// integer.c : ®”–½—ß.
+// integer.c : æ•´æ•°å‘½ä»¤.
 void jitcInitInteger(OsecpuJitc *jitc);
 int jitcStepInteger(OsecpuJitc *jitc);
 int jitcAfterStepInteger(OsecpuJitc *jitc);
@@ -187,24 +187,24 @@ void jitcStep_checkRxxNotR3F(int *pRC, int rxx);
 Int32 execStep_signBitExtend(Int32 value, int bit);
 Int32 execStep_getRxx(OsecpuVm *vm, int r, int bit);
 
-// pointer.c : ƒ|ƒCƒ“ƒ^–½—ß.
+// pointer.c : ãƒã‚¤ãƒ³ã‚¿å‘½ä»¤.
 void jitcInitPointer(OsecpuJitc *jitc);
 int jitcStepPointer(OsecpuJitc *jitc);
 int jitcAfterStepPointer(OsecpuJitc *jitc);
 void execStepPointer(OsecpuVm *vm);
 
-void getTypSize(int typ, int *typSize0, int *typSize1, int *typSign); // ‚±‚ê‚Í’¼‚·‚×‚«.
+void getTypSize(int typ, int *typSize0, int *typSize1, int *typSign); // ã“ã‚Œã¯ç›´ã™ã¹ã.
 void jitcStep_checkPxx(int *pRC, int pxx);
 void execStep_checkMemAccess(OsecpuVm *vm, int p, int typ, int flag);
 void execStep_plimm(OsecpuVm *vm, int p, int i);
 
-// float.c : •‚“®¬”“_–½—ß
+// float.c : æµ®å‹•å°æ•°ç‚¹å‘½ä»¤
 void jitcInitFloat(OsecpuJitc *jitc);
 int jitcStepFloat(OsecpuJitc *jitc);
 int jitcAfterStepFloat(OsecpuJitc *jitc);
 void execStepFloat(OsecpuVm *vm);
 
-// other.c : G–½—ß.
+// other.c : é›‘å‘½ä»¤.
 void jitcInitOther(OsecpuJitc *jitc);
 int jitcStepOther(OsecpuJitc *jitc);
 int jitcAfterStepOther(OsecpuJitc *jitc);
@@ -214,25 +214,25 @@ int osecpuVmPtrCtrlInit(OsecpuVm *vm, int size);
 int osecpuVmMakeLiveSign(OsecpuVm *vm);
 PtrCtrl *osecpuVmAllocPtrCtrl(OsecpuVm *vm);
 
-// extend.c : Šg’£–½—ßŠÖŒW.
+// extend.c : æ‹¡å¼µå‘½ä»¤é–¢ä¿‚.
 void jitcInitExtend(OsecpuJitc *jitc);
 int jitcStepExtend(OsecpuJitc *jitc);
 int jitcAfterStepExtend(OsecpuJitc *jitc);
 void execStepExtend(OsecpuVm *vm);
 
-// decode.c : ƒtƒƒ“ƒgƒGƒ“ƒhƒR[ƒhŠÖŒW.
+// decode.c : ãƒ•ãƒ­ãƒ³ãƒˆã‚¨ãƒ³ãƒ‰ã‚³ãƒ¼ãƒ‰é–¢ä¿‚.
 int decode_upx  (const unsigned char *p, const unsigned char *p1, unsigned char *q, unsigned char *q1);
 int decode_tek5 (const unsigned char *p, const unsigned char *p1, unsigned char *q, unsigned char *q1);
 int decode_fcode(const unsigned char *p, const unsigned char *p1, unsigned char *q, unsigned char *q1, char errExitFlag);
 
-// debug.c : ƒfƒoƒbƒOƒ‚ƒjƒ^[ŠÖŒW.
+// debug.c : ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ‹ã‚¿ãƒ¼é–¢ä¿‚.
 char *debugJitcReport(OsecpuJitc *jitc, char *msg);
 void execStepDebug(OsecpuVm *vm);
 
-// tek.c : tek5“WŠJŠÖŒW.
+// tek.c : tek5å±•é–‹é–¢ä¿‚.
 int tek_lzrestore_tek5(int srcsiz, unsigned char *src, int outsiz, unsigned char *outbuf);
 
-// plugin.c : ƒvƒ‰ƒOƒCƒ“ŠÖŒW.
+// plugin.c : ãƒ—ãƒ©ã‚°ã‚¤ãƒ³é–¢ä¿‚.
 int execPlugIn(const unsigned char *path, void *apiFunc, void *env, int bsiz, int flags, int limit[2+4]);
 #define OSECPUVM_END				0
 #define OSECPUVM_DOWN				1

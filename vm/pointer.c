@@ -1,6 +1,6 @@
 #include "osecpu-vm.h"
 
-// �|�C���^�֘A����: 01, 03, 0E, 1E, 2E
+// ポインタ関連命令: 01, 03, 0E, 1E, 2E
 
 void jitcInitPointer(OsecpuJitc *jitc)
 {
@@ -8,17 +8,17 @@ void jitcInitPointer(OsecpuJitc *jitc)
 }
 
 void getTypSize(int typ, int *typSize0, int *typSize1, int *typSign)
-// typSize0: ���̓o�C�i�����ł̃r�b�g��.
-// typSize1: �o�̓o�C�i�����ł̃o�C�g��.
+// typSize0: 入力バイナリ内でのビット数.
+// typSize1: 出力バイナリ内でのバイト数.
 {
 	*typSize0 = *typSize1 = -1;
 	if (2 <= typ && typ <= 21) {
 		static unsigned char table[10] = { 8, 16, 32, 4, 2, 1, 12, 20, 24, 28 };
 		int bytes;
 		if ((typ & 1) == 0)
-			*typSign = -1; // typ�������Ȃ畄������.
+			*typSign = -1; // typが偶数なら符号あり.
 		else
-			*typSign = 0; // typ����Ȃ畄���Ȃ�.
+			*typSign = 0; // typが奇数なら符号なし.
 		*typSize0 = table[(typ - 2) / 2];
 		bytes = (*typSize0 + 7) / 8;
 		if (bytes == 3) bytes = 4;
@@ -49,7 +49,7 @@ int jitcStepPointer(OsecpuJitc *jitc)
 			jitcSetRetCode(pRC, JITC_BAD_LABEL_TYPE);
 			goto fin;
 		}
-		jitc->defines->label[i].typ = PTR_TYP_CODE; // �Ƃ肠�����R�[�h���x���ɂ���.
+		jitc->defines->label[i].typ = PTR_TYP_CODE; // とりあえずコードラベルにする.
 		jitc->defines->label[i].opt = opt;
 		jitc->defines->label[i].dst = jitc->dst;
 		goto fin;
@@ -68,7 +68,7 @@ int jitcStepPointer(OsecpuJitc *jitc)
 		if (p != 0x3f && jitc->defines->label[i].opt == 0)
 			jitcSetRetCode(pRC, JITC_BAD_LABEL_TYPE);
 		if (p == 0x3f && jitc->defines->label[i].typ != PTR_TYP_CODE)
-			jitcSetRetCode(pRC, JITC_BAD_LABEL_TYPE); // P3F�Ƀf�[�^���x�������ł��Ȃ�.
+			jitcSetRetCode(pRC, JITC_BAD_LABEL_TYPE); // P3Fにデータラベルを代入できない.
 		goto fin;
 	}
 	if (opecode == 0x0e) {	// PADD(p1, typ, r, bit, p0);
@@ -89,7 +89,7 @@ int jitcStepPointer(OsecpuJitc *jitc)
 			jitcSetRetCode(pRC, JITC_BAD_PXX);
 		goto fin;
 	}
-	if (opecode == 0x2e) { // data...�����other.c�ֈړ�������ׂ�
+	if (opecode == 0x2e) { // data...これはother.cへ移動させるべき
 		BitReader br;
 		typ = hh4ReaderGetUnsigned(&jitc->hh4r);
 		len = hh4ReaderGetUnsigned(&jitc->hh4r);
@@ -98,7 +98,7 @@ int jitcStepPointer(OsecpuJitc *jitc)
 			jitcSetRetCode(pRC, JITC_BAD_TYPE);
 			goto fin;
 		}
-		jitc->instrLength = 0; // ���O�ŏ�������̂ŁA���̒l��0�ɂ���.
+		jitc->instrLength = 0; // 自前で処理するので、この値は0にする.
 		if (jitc->dst + 3 + (typSize1 * len + 3) / 4 + (len + 3) / 4 > jitc->dst1) {
 			jitcSetRetCode(pRC, JITC_DST_OVERRUN);
 			goto fin;
@@ -110,7 +110,7 @@ int jitcStepPointer(OsecpuJitc *jitc)
 		jitc->dst += 3;
 		if (typ != 1) {
 			bitReaderInit(&br, &jitc->hh4r);
-			// �ȉ��͍\���̃T�|�[�g�ɔz���ł��ĂȂ�.
+			// 以下は構造体サポートに配慮できてない.
 			if (typSize1 == 1 && typSign == 0) {
 				unsigned char *puc = (unsigned char *) jitc->dst;
 				for (i = 0; i < len; i++)
@@ -150,16 +150,16 @@ int jitcStepPointer(OsecpuJitc *jitc)
 		}
 		for (j = 0; j < JITC_DSTLOG_SIZE; j++) {
 			Int32 *dstLog = jitc->dstLog[(jitc->dstLogIndex + JITC_DSTLOG_SIZE - 1 - j) % JITC_DSTLOG_SIZE];
-				// 1�O�A2�O�A3�O...�̖��߂��`�F�b�N���Ă���.
+				// 1つ前、2つ前、3つ前...の命令をチェックしている.
 			if (dstLog == NULL) break;
 			if (dstLog[0] != 0x01) break;
-			if (dstLog[2] != 1) break; // opt=1�ȊO�̓f�[�^���x���ɂ͂ł��Ȃ�.
+			if (dstLog[2] != 1) break; // opt=1以外はデータラベルにはできない.
 			i = dstLog[1];
 			jitc->defines->label[i].typ = typ;
 			jitc->defines->label[i].dst = ip;
 		}
 		i = jitc->dstLogIndex;
-		jitc->dstLog[i] = ip; // �G���[�̂Ȃ��������߂͋L�^����.
+		jitc->dstLog[i] = ip; // エラーのなかった命令は記録する.
 		jitc->dstLogIndex = (i + 1) % JITC_DSTLOG_SIZE;
 		goto fin;
 
@@ -210,7 +210,7 @@ void execStepPointer(OsecpuVm *vm)
 		p1 = ip[1]; p0 = ip[2];
 		if (p0 == 0x3f) {
 			if (vm->p[p1].typ == PTR_TYP_CODE) {	// code
-				execStep_checkMemAccess(vm, p1, PTR_TYP_CODE, EXEC_CMA_FLAG_EXEC); // ���liveSign�̃`�F�b�N.
+				execStep_checkMemAccess(vm, p1, PTR_TYP_CODE, EXEC_CMA_FLAG_EXEC); // 主にliveSignのチェック.
 				if (vm->errorCode != 0) goto fin;
 				ip = (const Int32 *) vm->p[p1].p;
 			} else if (vm->p[p1].typ == PTR_TYP_NATIVECODE) {	// native-code (API)
@@ -258,7 +258,7 @@ void execStep_checkMemAccess(OsecpuVm *vm, int p, int typ, int flag)
 			jitcSetRetCode(&vm->errorCode, EXEC_PTR_RANGE_OVER);
 		else {
 			if ((vm->p[p].flags & 1) != 0)
-				jitcSetRetCode(&vm->errorCode, EXEC_PTR_RANGE_OVER); // over-seek���o.
+				jitcSetRetCode(&vm->errorCode, EXEC_PTR_RANGE_OVER); // over-seek検出.
 		}
 	}
 	if (flag == EXEC_CMA_FLAG_READ  && (vm->p[p].flags & EXEC_CMA_FLAG_READ)  == 0)
@@ -280,13 +280,13 @@ void execStep_plimm(OsecpuVm *vm, int p, int i)
 	if (typ >= 2) {
 		vm->p[p].p = (unsigned char *) (vm->defines->label[i].dst + 3);
 		vm->p[p].p0 = vm->p[p].p;
-		len = vm->defines->label[i].dst[2]; // 2e(data)��len�t�B�[���h�l.
+		len = vm->defines->label[i].dst[2]; // 2e(data)のlenフィールド値.
 		getTypSize(typ, &typSize0, &typSize1, &typSign);
 		vm->p[p].p1 = vm->p[p].p + typSize1 * len;
 		vm->p[p].bit = vm->p[p].p + ((typSize1 * len + 3) / 4) * 4;
 		vm->p[p].flags = 6; // over-seek:ok, read:ok, write:ok
 	}
-	if (typ == PTR_TYP_CODE) {	// �R�[�h���x��.
+	if (typ == PTR_TYP_CODE) {	// コードラベル.
 		vm->p[p].p = (unsigned char *) vm->defines->label[i].dst;
 		vm->p[p].p0 = vm->p[p].p;
 		vm->p[p].p1 = vm->p[p].p + 1;
