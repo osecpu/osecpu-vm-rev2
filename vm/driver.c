@@ -11,7 +11,8 @@ int OsecpuMain(int argc, const unsigned char **argv);
 		#define DRV_OSNUM			0x0001
 	#endif
 	#if (defined(__APPLE__))
-		#define DRV_OSNUM			0x0002
+		// #define DRV_OSNUM			0x0002
+		#define DRV_OSNUM			0x0004
 	#endif
 	#if (defined(__linux__))
 		#define DRV_OSNUM			0x0003
@@ -628,4 +629,153 @@ blMain()
  
 #endif /* (DRV_OSNUM == 0x0003) */
 
+#if (DRV_OSNUM == 0x0004)
 
+// OpenGL driver for Mac OSX, by hikalium (2017-04)
+#include <stdio.h>
+#include <mach/mach.h>
+#include <OpenGL/OpenGL.h>
+#include <GLUT/GLUT.h>
+#include <unistd.h>
+#include <pthread.h>
+
+GLuint texture;
+int needsRedisplay;
+int windowHandle;
+//
+int currentXSize;
+int currentYSize;
+//
+int needsUpdateTexture;
+char *nextVRAM;
+int nextXSize;
+int nextYSize;
+
+void genTexture(char *vram, int xsize, int ysize)
+{
+	glEnable(GL_TEXTURE_2D);
+	if(!texture){
+		glGenTextures(1, &texture);
+	}
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, xsize, ysize, 0,
+		GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, vram);
+	glBindTexture( GL_TEXTURE_2D, 0 );
+	//
+	currentXSize = xsize;
+	currentYSize = ysize;
+}
+
+void resize(int width, int height) {
+	glViewport( 0, 0, width, height);
+	glLoadIdentity();
+	needsRedisplay = 1;
+}
+
+void display(void){
+	if(needsUpdateTexture){
+		needsUpdateTexture = 0;
+		genTexture(nextVRAM, nextXSize, nextYSize);
+	}
+	if(needsRedisplay){
+		needsRedisplay = 0;
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glOrtho(0.0, currentXSize, currentYSize, 0.0, -1.0, 1.0);
+		if(texture){
+			glEnable(GL_TEXTURE_2D);//テクスチャ有効
+			glDisable(GL_BLEND);
+			glBindTexture( GL_TEXTURE_2D, texture );
+			glEnable(GL_ALPHA_TEST);//アルファテスト開始
+			glBegin(GL_POLYGON);
+				glTexCoord2f(0.0f, 1.0f); glVertex2d(0, currentYSize);//左下
+				glTexCoord2f(0.0f, 0.0f); glVertex2d(0, 0);//左上
+				glTexCoord2f(1.0f, 0.0f); glVertex2d(currentXSize, 0);//右上
+				glTexCoord2f(1.0f, 1.0f); glVertex2d(currentXSize, currentYSize);//右下
+			glEnd();
+			glDisable(GL_ALPHA_TEST);//アルファテスト終了
+			glDisable(GL_TEXTURE_2D);//テクスチャ無効
+
+			glutSwapBuffers();
+		}
+	}
+}
+
+void idle(void)
+{
+	glutPostRedisplay();
+}
+
+typedef unsigned char UCHAR;
+
+void *mallocRWE(int bytes)
+{
+	void *p = malloc(bytes);
+	vm_protect(mach_task_self(), (vm_address_t) p, bytes, FALSE, VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
+	return p;
+}
+
+typedef struct OSECPU_MAIN_ARGS {
+	int argc;
+	const char **argv;
+} OsecpuMainArgs;
+
+int OsecpuMainWrapper(OsecpuMainArgs *args){
+	return OsecpuMain(args->argc, args->argv);
+	pthread_exit(NULL);
+}
+
+int main(int argc, const char **argv)
+{
+	pthread_t pOsecpuMain;
+	OsecpuMainArgs args;
+
+	args.argc = argc;
+	args.argv = argv;
+
+	pthread_create(&pOsecpuMain, NULL, OsecpuMainWrapper, &args);
+
+	needsRedisplay = 1;
+	//
+	glutInit(&argc, argv);
+	glutInitWindowSize(800,600);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glutCreateWindow("OSECPU-VM");
+	glutReshapeFunc(resize);
+	glutDisplayFunc(display);
+	glutIdleFunc(idle);
+	//
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	//
+	//genTexture(vram, xsize, ysize);
+	//glOrtho(0.0, xsize, ysize, 0.0, -1.0, 1.0);
+	//
+	
+	//
+	glutMainLoop();
+	
+	return 0;
+}
+
+void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed)
+{
+	nextVRAM = buf;
+	nextXSize = sx;
+	nextYSize = sy;
+	needsUpdateTexture = 1;
+}
+
+void drv_flshWin(int sx, int sy, int x0, int y0)
+{
+	needsRedisplay = 1;
+}
+
+void drv_sleep(int msec)
+{
+	usleep(1000 * msec);
+}
+
+#endif

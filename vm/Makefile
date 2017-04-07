@@ -4,7 +4,8 @@ CC = cc
 SRCS = api.c decode.c driver.c extend.c float.c integer.c osecpu-vm.c other.c pointer.c tek.c debug.c
 BINNAME = osecpu
 DEL = rm
-CFLAGS = -x objective-c -Wall -arch x86_64 -framework Cocoa
+# CFLAGS = -x objective-c -Wall -arch x86_64 -framework Cocoa
+CFLAGS = -Wall -arch x86_64 -Wno-deprecated -framework GLUT -framework OpenGL
 
 $(BINNAME): $(SRCS) Makefile
 	$(CC) $(CFLAGS) -o $@ $(SRCS)
