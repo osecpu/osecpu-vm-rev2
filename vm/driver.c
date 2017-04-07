@@ -7,19 +7,19 @@ void drv_sleep(int msec);
 int OsecpuMain(int argc, const unsigned char **argv);
 
 #if (!defined(DRV_OSNUM))
-	#if (defined(_WIN32))
-		#define DRV_OSNUM			0x0001
-	#endif
-	#if (defined(__APPLE__))
-		// #define DRV_OSNUM			0x0002
-		#define DRV_OSNUM			0x0004
-	#endif
-	#if (defined(__linux__))
-		#define DRV_OSNUM			0x0003
-	#endif
-	/* 0001: win32-x86-32bit */
-	/* 0002: MacOS-x86-32bit */
-	/* 0003: linux-x86-32bit */
+#if (defined(_WIN32))
+#define DRV_OSNUM			0x0001
+#endif
+#if (defined(__APPLE__))
+// #define DRV_OSNUM			0x0002
+#define DRV_OSNUM			0x0004
+#endif
+#if (defined(__linux__))
+#define DRV_OSNUM			0x0003
+#endif
+/* 0001: win32-x86-32bit */
+/* 0002: MacOS-x86-32bit */
+/* 0003: linux-x86-32bit */
 #endif
 
 int *vram = 0, v_xsiz, v_ysiz;
@@ -150,10 +150,10 @@ static int winthread(void *dmy)
 	wc.cbWndExtra = 0;
 	wc.hInstance = dw.hi;
 	wc.hIcon = (HICON) LoadImage(NULL, MAKEINTRESOURCE(IDI_APPLICATION),
-		IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+			IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW),
-		IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+			IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
 	wc.hbrBackground = (HBRUSH) COLOR_APPWORKSPACE;
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = "WinClass";
@@ -196,7 +196,7 @@ static int winthread(void *dmy)
 	char *t = "osecpu";
 
 	dw.hw = CreateWindowA(wc.lpszClassName, t, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, x, y, NULL, NULL,	dw.hi, NULL);
+			CW_USEDEFAULT, CW_USEDEFAULT, x, y, NULL, NULL,	dw.hi, NULL);
 	if (dw.hw == NULL)
 		return 1;
 	ShowWindow(dw.hw, SW_SHOW);
@@ -214,7 +214,7 @@ static int winthread(void *dmy)
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-//	PostQuitMessage(0);
+	//	PostQuitMessage(0);
 	dw.flags |= 1; /* 終了, bld_waitNF()が見つける */
 	if (dw.winClosed != NULL)
 		*dw.winClosed = 1;
@@ -252,7 +252,7 @@ LRESULT CALLBACK WndProc(HWND hw, unsigned int msg, WPARAM wp, LPARAM lp)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(dw.hw, &ps);
 		SetDIBitsToDevice(hdc, 0, 0, w.win.xsiz, w.win.ysiz,
-			0, 0, 0, w.win.ysiz, w.win.buf, &dw.bmi, DIB_RGB_COLORS);
+				0, 0, 0, w.win.ysiz, w.win.buf, &dw.bmi, DIB_RGB_COLORS);
 		EndPaint(dw.hw, &ps);
 	}
 	if (msg == WM_DESTROY) {
@@ -315,13 +315,13 @@ LRESULT CALLBACK WndProc(HWND hw, unsigned int msg, WPARAM wp, LPARAM lp)
 		}
 		if (i != -1) {
 			putKeybuf(i | j);
-//			bl_putKeyB(1, &i);
+			//			bl_putKeyB(1, &i);
 			return 0;
 		}
 	}
 	if (msg == WM_KEYUP) {
 		i = 0xfff;
-//		bl_putKeyB(1, &i);
+		//		bl_putKeyB(1, &i);
 	}
 	if (msg == WM_CHAR) {
 		i = 0;
@@ -343,7 +343,7 @@ LRESULT CALLBACK WndProc(HWND hw, unsigned int msg, WPARAM wp, LPARAM lp)
 				}
 			}
 			putKeybuf(i);
-//			bl_putKeyB(1, &i);
+			//			bl_putKeyB(1, &i);
 			return 0;
 		}
 	}
@@ -352,8 +352,8 @@ LRESULT CALLBACK WndProc(HWND hw, unsigned int msg, WPARAM wp, LPARAM lp)
 
 void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed)
 {
-//	if (sx <= 0 || sy <= 0) return;
-//	if (sx < 160) return;
+	//	if (sx <= 0 || sy <= 0) return;
+	//	if (sx < 160) return;
 	w.win.buf = (int *) buf;
 	w.win.xsiz = sx;
 	w.win.ysiz = sy;
@@ -364,7 +364,7 @@ void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed)
 void drv_sleep(int msec)
 {
 	Sleep(msec);
-//	MsgWaitForMultipleObjects(1, &threadhandle, FALSE, msec, QS_ALLINPUT);
+	//	MsgWaitForMultipleObjects(1, &threadhandle, FALSE, msec, QS_ALLINPUT);
 	/* 勉強不足でまだ書き方が分かりません! */
 	return;
 }
@@ -390,44 +390,44 @@ void *mallocRWE(int bytes)
 NSApplication* app;
 
 @interface OSECPUView : NSView {
-  UCHAR *_buf;
-  int _sx;
-  int _sy;
+	UCHAR *_buf;
+	int _sx;
+	int _sy;
 	CGContextRef _context;
 }
 
 - (id)initWithFrame:(NSRect)frameRect
-  buf : (UCHAR *) buf
-  sx : (int) sx
-  sy : (int) sy;
+buf : (UCHAR *) buf
+sx : (int) sx
+sy : (int) sy;
 
 - (void)drawRect:(NSRect)rect;
 @end
 
 @implementation OSECPUView
 - (id)initWithFrame:(NSRect)frameRect
-  buf : (UCHAR *) buf
-  sx : (int) sx
-  sy : (int) sy
+buf : (UCHAR *) buf
+sx : (int) sx
+sy : (int) sy
 {
-  self = [super initWithFrame:frameRect];
-  if (self) {
-    _buf = buf;
-    _sx = sx;
-    _sy = sy;
-  }
-  return self;
+	self = [super initWithFrame:frameRect];
+	if (self) {
+		_buf = buf;
+		_sx = sx;
+		_sy = sy;
+	}
+	return self;
 }
- 
+
 - (void)drawRect:(NSRect)rect {
-  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-  _context = CGBitmapContextCreate (_buf, _sx, _sy, 8, 4 * _sx, colorSpace, (kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst));
-  CGImageRef image = CGBitmapContextCreateImage(_context);
-  CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-  CGContextDrawImage(currentContext, NSRectToCGRect(rect), image);
-  // bugfix: hinted by hikarupsp, 2014.03.15. thanks!
-  CGColorSpaceRelease(colorSpace);
-  CGImageRelease(image);
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	_context = CGBitmapContextCreate (_buf, _sx, _sy, 8, 4 * _sx, colorSpace, (kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst));
+	CGImageRef image = CGBitmapContextCreateImage(_context);
+	CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextDrawImage(currentContext, NSRectToCGRect(rect), image);
+	// bugfix: hinted by hikarupsp, 2014.03.15. thanks!
+	CGColorSpaceRelease(colorSpace);
+	CGImageRelease(image);
 }
 
 // inkey support by ???, 2014.07.15. thanks!
@@ -436,60 +436,60 @@ NSApplication* app;
 // このメソッドが呼ばれるためには，
 // このビューがWindowのFirst Responderで無ければならない.
 - (void)keyDown:(NSEvent *)theEvent {
-  if ([[theEvent characters] length] <= 0) {
-    return;
-  }
-   
-  // ここでcはキーコードなどでは無く，生成された文字．
-  // そのため，OSのキーマップに依存する可能性がある．
- 
-  unichar c = [[theEvent characters] characterAtIndex:0];
-  NSUInteger flags = [NSEvent modifierFlags];
- 
-  // default;
-  int result = c; // i
-  int modif  = 0;  // j
- 
-  if (c == ' ')  { result = ' '; }
-  if (c == '\r') { result = KEY_ENTER; }
-  if (c == '\e') { result = KEY_ESC; }
-  if (c == 127)  { result = KEY_BACKSPACE; }
-  if (c == '\t') { result = KEY_TAB; }
-   
-  if (c == NSPageUpFunctionKey) { result = KEY_PAGEUP; }
-  if (c == NSPageDownFunctionKey) { result = KEY_PAGEDWN; }
-  if (c == NSEndFunctionKey) { result = KEY_END; }
-  if (c == NSHomeFunctionKey) { result = KEY_HOME; }
-   
-  if (c == NSLeftArrowFunctionKey) { result = KEY_LEFT; }
-  if (c == NSRightArrowFunctionKey) { result = KEY_RIGHT; }
-  if (c == NSUpArrowFunctionKey) { result = KEY_UP; }
-  if (c == NSDownArrowFunctionKey) { result = KEY_DOWN; }
-   
-  if (c == NSDeleteFunctionKey) { result = KEY_DEL; }
+	if ([[theEvent characters] length] <= 0) {
+		return;
+	}
 
-  // Cocoaフレームワークでは，修飾キーの右左を区別するやつが見当たらなかったです.
-  if (flags & NSShiftKeyMask) { modif |= 1 << 16; }
-  if (flags & NSControlKeyMask) { modif |= 1 << 17; }
+	// ここでcはキーコードなどでは無く，生成された文字．
+	// そのため，OSのキーマップに依存する可能性がある．
 
-  if (('A' <= result && result <= 'Z') || ('a' <= result && result <= 'z')) {
-    if (modif != 0) {
-      result |= modif;
-      result &= ~0x20; // 大文字にしている.
-    }
-  }
+	unichar c = [[theEvent characters] characterAtIndex:0];
+	NSUInteger flags = [NSEvent modifierFlags];
 
-  putKeybuf(result);
-//  NSLog(@"char = %d, flags = %x", result, modif);
+	// default;
+	int result = c; // i
+	int modif  = 0;  // j
+
+	if (c == ' ')  { result = ' '; }
+	if (c == '\r') { result = KEY_ENTER; }
+	if (c == '\e') { result = KEY_ESC; }
+	if (c == 127)  { result = KEY_BACKSPACE; }
+	if (c == '\t') { result = KEY_TAB; }
+
+	if (c == NSPageUpFunctionKey) { result = KEY_PAGEUP; }
+	if (c == NSPageDownFunctionKey) { result = KEY_PAGEDWN; }
+	if (c == NSEndFunctionKey) { result = KEY_END; }
+	if (c == NSHomeFunctionKey) { result = KEY_HOME; }
+
+	if (c == NSLeftArrowFunctionKey) { result = KEY_LEFT; }
+	if (c == NSRightArrowFunctionKey) { result = KEY_RIGHT; }
+	if (c == NSUpArrowFunctionKey) { result = KEY_UP; }
+	if (c == NSDownArrowFunctionKey) { result = KEY_DOWN; }
+
+	if (c == NSDeleteFunctionKey) { result = KEY_DEL; }
+
+	// Cocoaフレームワークでは，修飾キーの右左を区別するやつが見当たらなかったです.
+	if (flags & NSShiftKeyMask) { modif |= 1 << 16; }
+	if (flags & NSControlKeyMask) { modif |= 1 << 17; }
+
+	if (('A' <= result && result <= 'Z') || ('a' <= result && result <= 'z')) {
+		if (modif != 0) {
+			result |= modif;
+			result &= ~0x20; // 大文字にしている.
+		}
+	}
+
+	putKeybuf(result);
+	//  NSLog(@"char = %d, flags = %x", result, modif);
 }
 
 @end
 
 @interface Main : NSObject<NSWindowDelegate> {
-  int argc;
-  const UCHAR **argv;
-  char *winClosed;
-  OSECPUView *_view;
+	int argc;
+	const UCHAR **argv;
+	char *winClosed;
+	OSECPUView *_view;
 }
 
 - (void)runApp;
@@ -506,31 +506,31 @@ winClosed : (char *)_winClosed;
 @implementation Main
 - (void)runApp
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  OsecpuMain(argc, (const UCHAR **) argv);
-  [NSApp terminate:self];
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	OsecpuMain(argc, (const UCHAR **) argv);
+	[NSApp terminate:self];
 	[pool release];
 }
 
 - (void)createThread : (int)_argc
-  args : (const char **)_argv
+args : (const char **)_argv
 {
-  argc = _argc;
-  argv = _argv;
-  NSThread *thread = [[[NSThread alloc] initWithTarget:self selector:@selector(runApp) object:nil] autorelease];
-  [thread start];
+	argc = _argc;
+	argv = _argv;
+	NSThread *thread = [[[NSThread alloc] initWithTarget:self selector:@selector(runApp) object:nil] autorelease];
+	[thread start];
 }
 
 - (BOOL)windowShouldClose:(id)sender
 {
-  *winClosed = 1;
-  return YES;
+	*winClosed = 1;
+	return YES;
 }
 
 - (void)openWin : (UCHAR *)buf
-  sx : (int) sx
-  sy : (int) sy
-  winClosed : (char *)_winClosed
+sx : (int) sx
+sy : (int) sy
+winClosed : (char *)_winClosed
 {
 
 	NSWindow* window = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, sx, sy) styleMask: NSTitledWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO];
@@ -544,15 +544,15 @@ winClosed : (char *)_winClosed;
 	_view = [[OSECPUView alloc] initWithFrame:NSMakeRect(0,0,sx,sy) buf:buf sx:sx sy:sy];
 	[window.contentView addSubview:_view];
 
-  // inkey support by ???, 2014.07.15. thanks!
-  // First Responderが入力の責任を持つ.
-  [window makeFirstResponder:_view];
+	// inkey support by ???, 2014.07.15. thanks!
+	// First Responderが入力の責任を持つ.
+	[window makeFirstResponder:_view];
 }
 
 - (void)flushWin : (NSRect) rect
-  {
-    [_view setNeedsDisplayInRect:rect]; // by ???, 2014.06.25
-  }
+{
+	[_view setNeedsDisplayInRect:rect]; // by ???, 2014.06.25
+}
 
 @end
 
@@ -580,53 +580,53 @@ int main(int argc, const char **argv)
 
 void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed)
 {
-  [objc_main openWin:buf sx:sx sy:sy winClosed:winClosed];
+	[objc_main openWin:buf sx:sx sy:sy winClosed:winClosed];
 }
 
 void drv_flshWin(int sx, int sy, int x0, int y0)
 {
-  [objc_main flushWin:NSMakeRect(x0,y0,sx,sy)];
+	[objc_main flushWin:NSMakeRect(x0,y0,sx,sy)];
 }
 
 void drv_sleep(int msec)
 {
-  [NSThread sleepForTimeInterval:0.001*msec];
-   return;
+	[NSThread sleepForTimeInterval:0.001*msec];
+	return;
 }
 
 #endif
 
 #if (DRV_OSNUM == 0x0003)
- 
+
 // by takeutch-kemeco, 2013.07.25-
 
 typedef unsigned char UCHAR;
- 
+
 void __bl_openWin_attach_vram(int, int, int*);
 void *__bld_mallocRWE(unsigned int);
 void bld_flshWin(int, int, int, int);
 void bl_wait(int);
 void __bld_set_callback_key_press(void (*f)(void*, const int));
 void __bld_set_callback_key_release(void (*f)(void*, const int));
- 
+
 extern int bl_argc;
 extern const UCHAR** bl_argv;
- 
+
 static void __drv_bld_callback_key_press(void* a, const int keyval) { if (keyval != -1) putKeybuf(keyval); }
 static void __drv_bld_callback_key_release(void* a, const int keyval) { /* putKeybuf(0x0fff); */ }
- 
+
 void *mallocRWE(int bytes) { return __bld_mallocRWE(bytes); }
 void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed) { __bl_openWin_attach_vram(sx, sy, (int*) buf); }
 void drv_flshWin(int sx, int sy, int x0, int y0) { bld_flshWin(sx, sy, x0, y0); }
 void drv_sleep(int msec) { bl_wait(msec); }
- 
+
 blMain()
 {
-    __bld_set_callback_key_press(__drv_bld_callback_key_press);
-    __bld_set_callback_key_release(__drv_bld_callback_key_release);
-    OsecpuMain(bl_argc, bl_argv);
+	__bld_set_callback_key_press(__drv_bld_callback_key_press);
+	__bld_set_callback_key_release(__drv_bld_callback_key_release);
+	OsecpuMain(bl_argc, bl_argv);
 }
- 
+
 #endif /* (DRV_OSNUM == 0x0003) */
 
 #if (DRV_OSNUM == 0x0004)
@@ -653,6 +653,7 @@ int nextYSize;
 
 void genTexture(char *vram, int xsize, int ysize)
 {
+	glutReshapeWindow(xsize, ysize);
 	glEnable(GL_TEXTURE_2D);
 	if(!texture){
 		glGenTextures(1, &texture);
@@ -661,7 +662,7 @@ void genTexture(char *vram, int xsize, int ysize)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, xsize, ysize, 0,
-		GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, vram);
+			GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, vram);
 	glBindTexture( GL_TEXTURE_2D, 0 );
 	//
 	currentXSize = xsize;
@@ -691,10 +692,10 @@ void display(void){
 			glBindTexture( GL_TEXTURE_2D, texture );
 			glEnable(GL_ALPHA_TEST);//アルファテスト開始
 			glBegin(GL_POLYGON);
-				glTexCoord2f(0.0f, 1.0f); glVertex2d(0, currentYSize);//左下
-				glTexCoord2f(0.0f, 0.0f); glVertex2d(0, 0);//左上
-				glTexCoord2f(1.0f, 0.0f); glVertex2d(currentXSize, 0);//右上
-				glTexCoord2f(1.0f, 1.0f); glVertex2d(currentXSize, currentYSize);//右下
+			glTexCoord2f(0.0f, 1.0f); glVertex2d(0, currentYSize);//左下
+			glTexCoord2f(0.0f, 0.0f); glVertex2d(0, 0);//左上
+			glTexCoord2f(1.0f, 0.0f); glVertex2d(currentXSize, 0);//右上
+			glTexCoord2f(1.0f, 1.0f); glVertex2d(currentXSize, currentYSize);//右下
 			glEnd();
 			glDisable(GL_ALPHA_TEST);//アルファテスト終了
 			glDisable(GL_TEXTURE_2D);//テクスチャ無効
@@ -753,10 +754,10 @@ int main(int argc, const char **argv)
 	//genTexture(vram, xsize, ysize);
 	//glOrtho(0.0, xsize, ysize, 0.0, -1.0, 1.0);
 	//
-	
+
 	//
 	glutMainLoop();
-	
+
 	return 0;
 }
 
@@ -770,12 +771,14 @@ void drv_openWin(int sx, int sy, UCHAR *buf, char *winClosed)
 
 void drv_flshWin(int sx, int sy, int x0, int y0)
 {
+	needsUpdateTexture = 1;
 	needsRedisplay = 1;
 }
 
 void drv_sleep(int msec)
 {
-	usleep(1000 * msec);
+	usleep(100 * msec);
 }
 
 #endif
+
