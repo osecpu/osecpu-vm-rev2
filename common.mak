@@ -8,7 +8,7 @@ ifeq ($(OS),Windows_NT)
 	REMOVE = rm
 
 else
-	UNAME = \${shell uname}
+	UNAME = $(shell uname)
 ifeq ($(UNAME),Linux)
 	# for Linux
 endif
