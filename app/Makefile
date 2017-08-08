@@ -1,12 +1,21 @@
 
+TARGETS=$(addsuffix .ose, $(basename $(wildcard *.ask)))
 OSECTOLS=../tol/osectols
 
-%.ose : %.ask Makefile
-	gcc -E -P -C -x c $*.ask | ../tol/rmcomment > $*.m0
-	$(OSECTOLS) tool:aska in:$*.m0 out:$*.m1
-	gcc -E -x c $*.m1 -o $*.m2
-	$(OSECTOLS) tool:lbstk in:$*.m2 out:$*.m3 lst:$*.lst
-	grep -v -e '^#' $*.m3 > $*.m4
-	$(OSECTOLS) tool:db2bin in:$*.m4 out:$*.ose
-	$(OSECTOLS) tool:appack in:$*.ose out:$*.packed.ose
-	
+default:
+	make $(TARGETS)
+
+%.ose : %.ask
+	gcc -E -o $*_0ask.txt -x c $<
+	$(OSECTOLS) tool:aska in:$*_0ask.txt out:$*_1oas.txt
+	gcc -E -P -o $*_2cas.txt -x c $*_1oas.txt
+	$(OSECTOLS) tool:lbstk in:$*_2cas.txt out:$*_3cas.txt lst:$*_3lbl.txt
+	$(OSECTOLS) tool:db2bin in:$*_3cas.txt out:$@
+	$(OSECTOLS) tool:appack in:$@ out:$*_.ose
+
+clean:
+	-rm *.txt
+
+src_only:
+	make clean
+	-rm *.ose

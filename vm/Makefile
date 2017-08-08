@@ -1,6 +1,11 @@
 # for Mac OSX
 
-CC = cc
+ROOT_PATH=..
+include $(ROOT_PATH)/common.mak
+
+GOCC1 = $(TOLSET_PATH)/gocc1
+
+
 SRCS = api.c decode.c driver.c extend.c float.c integer.c osecpu-vm.c other.c pointer.c tek.c debug.c
 BINNAME = osecpu
 DEL = rm

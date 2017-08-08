@@ -1,4 +1,6 @@
-TARGETS=osectols rmcomment
+TARGETS=osectols
+
+include ../common.mak
 
 default:
 	make $(TARGETS)
