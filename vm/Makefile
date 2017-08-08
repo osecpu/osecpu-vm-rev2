@@ -1,31 +1,13 @@
-# for Mac OSX
 
 ROOT_PATH=..
 include $(ROOT_PATH)/common.mak
 
-GOCC1 = $(TOLSET_PATH)/gocc1
-
-
 SRCS = api.c decode.c driver.c extend.c float.c integer.c osecpu-vm.c other.c pointer.c tek.c debug.c
 BINNAME = osecpu
-DEL = rm
-# CFLAGS = -x objective-c -Wall -arch x86_64 -framework Cocoa
-CFLAGS = -Wall -arch x86_64 -Wno-deprecated -framework GLUT -framework OpenGL
 
 $(BINNAME): $(SRCS) Makefile
-	$(CC) $(CFLAGS) -o $@ $(SRCS)
+	echo $(OS)
+	$(CC_NATIVE) -o $@ $(SRCS) $(CFLAGS_VM)
 
 clean:
-	$(DEL) $(BINNAME)
-
-%.ose : %.ask
-	gcc -E -o a_0ask.txt -x c $<
-	./osectols tool:aska in:a_0ask.txt out:a_1oas_$*.txt
-	gcc -E -P -o a_2cas.txt -x c a_1oas_$*.txt
-	./osectols tool:lbstk in:a_2cas.txt out:a_3cas.txt lst:a_3lbl.txt
-	./osectols tool:db2bin in:a_3cas.txt out:$@
-	./osectols tool:appack in:$@ out:$*_.ose
-
-osectols: osectols.c
-	gcc $< -o $@ -Wl,-s -Os -m32
-
+	-$(REMOVE) $(BINNAME)
